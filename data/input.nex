@@ -1,0 +1,7 @@
+# Placeholder NEXUS file. Replace with your real input.nex
+# Begin data;
+# Dimensions ntax=... nchar=...;
+# Format datatype=dna missing=? gap=-;
+# Matrix
+# ...
+# ;

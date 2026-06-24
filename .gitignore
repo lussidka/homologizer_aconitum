@@ -1,0 +1,4 @@
+# Ignore results and work directories by default
+results/
+work/
+*.log
