@@ -34,7 +34,11 @@ zkouska/
     vysledky: jednotlive opakovani pro kazdy pocet tips je potreba zprumerovat
     prumery opakovani: porovnat mezi sebou prumery a pokud je tam vetsi rozdil nez 10 tak uznat to nejVYSSI reseni (nejaky upozorneni pokud je to tesne?)
     tohle nejvyssi reseni pak pouzit do vysledneho homologizeru (nejak?)
- - homologizer script s novým vzorkem: v procesu, nefunguje R vykresleni
+ - homologizer script s novým vzorkem: uprava aby fungovalo vykresleni
+
+UPRAVA VE R-SCRIPTU = 
+    19 genecopymap = read.csv(genecopyFn,header=T,stringsAsFactors=FALSE) -místo TRUE - pak funguje i zobrazeni v R pritom kdyz mame vice vzorku a jeste blank
+
 
 (
     Snakemake + RevBayes pipeline scaffolding

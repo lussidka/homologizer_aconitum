@@ -6,11 +6,11 @@
 # Will Freyman
 #
 bayes_factors = FALSE
-output_file = "output/homologizer"
+output_file = "output/homologizer_n_PPSK4_177_1"
 
 # input sequence alignments
-alignments = ["RPB2_tip-test-A.nex",
-              "EIF3E_tip-test-A.nex"]
+alignments = ["data/RPB2_tip-test-A.nex",
+              "data/EIF3E_tip-test-A.nex"]
 num_loci = alignments.size()
 
 for (i in 1:num_loci) {
@@ -93,7 +93,7 @@ for (i in 1:1) {
 
     Q[i] := fnGTR(er[i], pi[i])
 
-# plus pøidání Gamma-distributed rates (+G):
+# plus pï¿½idï¿½nï¿½ Gamma-distributed rates (+G):
 alpha ~ dnUniform( 0.0, 10 )
 sr := fnDiscretizeGamma( alpha, alpha, 4 ) # 4 Gamma categories
 moves.append( mvScale(alpha, weight=2.0) )
@@ -126,7 +126,7 @@ moves.append( mvScale(kappa) )
 
     Q[i] := fnHKY(kappa, pi[i])
 
-# plus pøidání Gamma-distributed rates (+G):
+# plus pï¿½idï¿½nï¿½ Gamma-distributed rates (+G):
 alpha ~ dnUniform( 0.0, 10 )
 sr := fnDiscretizeGamma( alpha, alpha, 4 ) # 4 Gamma categories
 moves.append( mvScale(alpha, weight=2.0) )
@@ -145,10 +145,9 @@ for (i in 2:2) {
     ctmc[i] ~ dnPhyloCTMC(tree=tree, Q=Q[i], siteRates=sr, branchRates=rate_multiplier[i], type="DNA")
 }
 
-# make phasing proposals - povolim pro nejasne fazovatelny vz. deg_UMA2_112 (blizke alely); když budem testovat samotny cilovy vz. n_PPSK4_177 na 1 tip, tak jeho radek jednoduse deaktivovat!
+# make phasing proposals - povolim pro nejasne fazovatelny vz. deg_UMA2_112 (blizke alely); kdyï¿½ budem testovat samotny cilovy vz. n_PPSK4_177 na 1 tip, tak jeho radek jednoduse deaktivovat!
 for (i in 1:num_loci) {
     moves[++mvi] = mvHomeologPhase(ctmc[i], "deg_UMA2_112_A", "deg_UMA2_112_B", weight=2)
-#    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_PPSK4_177_A", "n_PPSK4_177_B", weight=2)
 }
 
 

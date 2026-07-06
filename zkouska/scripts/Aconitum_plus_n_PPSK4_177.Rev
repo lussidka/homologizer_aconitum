@@ -6,11 +6,11 @@
 # Will Freyman
 #
 bayes_factors = FALSE
-output_file = "output/homologizer"
+output_file = "output/homologizer_n_PPSK4_177"
 
 # input sequence alignments
-alignments = ["RPB2_tip-test-A.nex",
-              "EIF3E_tip-test-A.nex"]
+alignments = ["data/RPB2_tip-test-A.nex",
+              "data/EIF3E_tip-test-A.nex"]
 num_loci = alignments.size()
 
 for (i in 1:num_loci) {

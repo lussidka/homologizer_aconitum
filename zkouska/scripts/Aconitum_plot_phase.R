@@ -14,7 +14,8 @@ library(ggtree)
 library(ape)
 
 
-genecopymap = read.csv(genecopyFn,header=T,stringsAsFactors=TRUE)
+#puvodni genecopymap = read.csv(genecopyFn,header=T,stringsAsFactors=TRUE)
+genecopymap = read.csv(genecopyFn,header=T,stringsAsFactors=FALSE)
 samples = split(genecopymap$Subgenome,genecopymap$Sample)
 
 # names of the loci in the log file
