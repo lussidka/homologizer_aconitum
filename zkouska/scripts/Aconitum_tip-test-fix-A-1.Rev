@@ -6,7 +6,7 @@
 # Will Freyman
 #
 bayes_factors = FALSE
-output_file = "output/homologizer_n_PPSK4_177_1"
+output_file = "output/stepping_stone_n_PPSK4_177_1"
 
 # input sequence alignments
 alignments = ["data/RPB2_tip-test-A.nex",

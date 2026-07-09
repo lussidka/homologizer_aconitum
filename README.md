@@ -39,7 +39,10 @@ zkouska/
 UPRAVA VE R-SCRIPTU = 
     19 genecopymap = read.csv(genecopyFn,header=T,stringsAsFactors=FALSE) -místo TRUE - pak funguje i zobrazeni v R pritom kdyz mame vice vzorku a jeste blank
 
+- pridat sem nex soubory - ale az po prvnim propojeni
+    nejdrive propojit - ty nex co mame pro vzorek n_PPSK4_177 , pak scripty pr stepping stone, pak vysledny likelihoody - pak ten vysledek - script pro homologizer (a pak idealne vytahahnout spravny phasing do tabulky, plus vytvorit vlastni generovani nex souboru pro kazdy vzorek)
 
+- nez se spusti agent -  pripsat dalsi vzorek do tabulky aby to probehlo hezky i pro dalsi vzorek 
 (
     Snakemake + RevBayes pipeline scaffolding
 
