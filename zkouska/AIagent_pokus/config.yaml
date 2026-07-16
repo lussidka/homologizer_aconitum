@@ -1,0 +1,12 @@
+samples_csv: "scripts/data/vstupni_obsah_zkouska.csv"
+master_nex:
+  EIF3E: "scripts/data/EIF3E_test.nex"
+  RPB2: "scripts/data/RPB2_test.nex"
+output_dir: "results"
+core_samples:
+  - n_VJJS2_011
+  - lyc_HHA1_072
+  - n_BHA6_068
+  - n_DSO2_114
+  - var_BOB2_057
+  - deg_UMA2_112
