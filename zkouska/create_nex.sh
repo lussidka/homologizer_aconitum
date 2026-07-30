@@ -3,7 +3,7 @@
 GENES=("EIF3E" "RPB2")
 CORE_CSV_FILE="scripts/data/core_samples.csv" 
 TARGET_CSV_FILE="scripts/data/target_samples.csv" 
-OUTPUT_DIR="scripts/data/ss_scripty/nexus_files_samples"
+OUTPUT_DIR="scripts/data/ss_scripts/nexus_files_samples"
 
 mkdir -p "$OUTPUT_DIR"
 
@@ -17,6 +17,7 @@ for GENE in "${GENES[@]}"; do
 
     # Automatically detect the number of characters (nchar) from the NEXUS file
     NCHAR=$(grep -i -E "DIMENSIONS nchar=[0-9]+" "$NEXUS_FILE" | grep -o -E "[0-9]+")
+    echo "------------------------------------------------------------"
     echo "Number of characters detected: $NCHAR"
 
     # Load core samples from the CSV file, ignoring empty lines and trimming whitespace
@@ -52,8 +53,6 @@ for GENE in "${GENES[@]}"; do
     done
 
     NUM_CORE=${#ACTUAL_CORE_RAW[@]}
-    echo "Number of core copies found: $NUM_CORE"
-    echo "------------------------------------------------------------"
 
     # ==========================================
     #  MAIN LOOP FOR TARGET SAMPLES
