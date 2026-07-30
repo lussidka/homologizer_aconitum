@@ -163,8 +163,8 @@ bayes_factors = FALSE
 output_file = "output/stepping_stone_${SAMPLE_ID}_${TESTED_PLOIDY}"
 
 # input sequence alignments
-alignments = ["male_nexus_soubory/RPB2_${SAMPLE_ID}.nex",
-              "male_nexus_soubory/EIF3E_${SAMPLE_ID}.nex"]
+alignments = ["nexus_files_samples/RPB2_${SAMPLE_ID}.nex",
+              "nexus_files_samples/EIF3E_${SAMPLE_ID}.nex"]
 num_loci = alignments.size()
 
 for (i in 1:num_loci) {
