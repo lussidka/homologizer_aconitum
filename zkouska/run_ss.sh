@@ -25,7 +25,7 @@ for rev_script in "$SCRIPT_DIR"/*.Rev; do
         echo " -> Running ${run}/3... Terminal output will be saved to: $TXT_FILE"
         
         # start of the RevBayes itself (called by the command: rb) 
-        rb "$rev_script" > "$TXT_FILE" 2>&1
+        "C:\Users\rycht\Desktop\revbayes-v1.3.2_kopie\bin\rb.exe" "$rev_script" > "$TXT_FILE" 2>&1
         
     done
 done
