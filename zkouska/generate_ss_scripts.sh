@@ -1,22 +1,20 @@
 #!/bin/bash
 
 # ==============================================================================
-# Generátor RevBayes skriptů pro Stepping Stone analýzu
+# Generator of the RevBayes scripts for stepping stone analysis
 # ==============================================================================
 
-# Vstupní soubory s metadaty
-CORE_CSV="scripts/data/core_vzorky.csv"
-TARGET_CSV="scripts/data/dalsi_vzorky.csv"
-OUTPUT_DIR="scripts/data/ss_scripty"
+CORE_CSV="scripts/data/core_samples.csv"
+TARGET_CSV="scripts/data/target_samples.csv"
+OUTPUT_DIR="scripts/data/ss_scripts"
 
-# Vytvoření výstupní složky
 mkdir -p "$OUTPUT_DIR"
 
-# Pole pro převod čísel na písmena (index 1 = A,..)
+# Transformation of the numbers to letters (index 1 = A,..)
 LETTERS=(X A B C D E F G H I J)
 
 # ==============================================================================
-# 0. PŘEDZPRACOVÁNÍ CORE VZORKŮ (generování sdílených bloků)
+# processing of core samples (generating shared blocks)
 # ==============================================================================
 CORE_BLANK_RPB2=""
 CORE_BLANK_EIF3E=""
@@ -35,7 +33,7 @@ while IFS=';,' read -r C_SAMPLE_ID C_RPB2_COUNT C_EIF3E_COUNT C_PHASE_COUNT C_MA
 
     if [ -z "$C_SAMPLE_ID" ]; then continue; fi
     
-    # 1. DOPLNĚNÍ CHYBĚJÍCÍCH TAXA PRO CORE VZORKY (vše se jmenuje _copyX)
+    # Add missing taxa for core samples (all named _copyX)
     if [ "$C_RPB2_COUNT" -lt "$C_PHASE_COUNT" ]; then
         for (( j=C_RPB2_COUNT+1; j<=C_PHASE_COUNT; j++ )); do
             CORE_BLANK_RPB2+="\ndata[1].addMissingTaxa(\"${C_SAMPLE_ID}_copy${j}\")"
@@ -49,36 +47,35 @@ while IFS=';,' read -r C_SAMPLE_ID C_RPB2_COUNT C_EIF3E_COUNT C_PHASE_COUNT C_MA
     fi
 
     # ==========================================================================
-    # ROZDĚLENÍ LOGIKY: FIXNÍ vs. DYNAMICKÉ VZORKY
+    # setting the logic for phase assignment: FIXED vs. DYNAMIC CORE SAMPLES
     # ==========================================================================
     if [ "$C_SAMPLE_ID" == "n_VJJS2_011" ]; then
         
-        # Lokus 1 (RPB2)
+        # Locus 1 (RPB2)
         CORE_PHASE_FIXED_L1+="    # $C_SAMPLE_ID (FIXED)\n"
         CORE_PHASE_FIXED_L1+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy3\", \"${C_SAMPLE_ID}_A\")\n"
         CORE_PHASE_FIXED_L1+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy2\", \"${C_SAMPLE_ID}_B\")\n"
         CORE_PHASE_FIXED_L1+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy1\", \"${C_SAMPLE_ID}_C\")\n"
 
-        # Lokus 2 (EIF3E)
+        # Locus 2 (EIF3E)
         CORE_PHASE_FIXED_L2+="    # $C_SAMPLE_ID (FIXED)\n"
         CORE_PHASE_FIXED_L2+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy3\", \"${C_SAMPLE_ID}_A\")\n"
         CORE_PHASE_FIXED_L2+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy2\", \"${C_SAMPLE_ID}_B\")\n"
         CORE_PHASE_FIXED_L2+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy1\", \"${C_SAMPLE_ID}_C\")\n"
 
     else
-        # 2. NASTAVENÍ FÁZÍ PRO BĚŽNÉ DYNAMICKÉ CORE VZORKY
+        # setting of the phasing for dynamic core samples
         if [ "$C_PHASE_COUNT" -gt 1 ]; then
             CORE_PHASE_DYNAMIC+="    # $C_SAMPLE_ID\n"
             C_CURRENT_LETTER_IDX=1
             
-            # Jednoduchý cyklus od 1 do konečného počtu fází (nerozlišujeme reálné/umělé)
             for (( c=1; c<=C_PHASE_COUNT; c++ )); do
                 CORE_PHASE_DYNAMIC+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy${c}\", \"${C_SAMPLE_ID}_${LETTERS[$C_CURRENT_LETTER_IDX]}\")\n"
                 ((C_CURRENT_LETTER_IDX++))
             done
         fi
 
-        # 3. MOVES PRO DYNAMICKÉ CORE VZORKY
+        # moves for dynamic core samples
         if [ "$C_PHASE_COUNT" -eq 2 ]; then
             CORE_MOVES+="    moves[++mvi] = mvHomeologPhase(ctmc[i], \"${C_SAMPLE_ID}_A\", \"${C_SAMPLE_ID}_B\", weight=2)\n"
         elif [ "$C_PHASE_COUNT" -gt 2 ]; then
@@ -93,13 +90,14 @@ while IFS=';,' read -r C_SAMPLE_ID C_RPB2_COUNT C_EIF3E_COUNT C_PHASE_COUNT C_MA
 done < <(tail -n +2 "$CORE_CSV")
 
 # ==============================================================================
-# 1. ZPRACOVÁNÍ TARGET VZORKŮ 
+# PROCESSING OF TARGET SAMPLES
 # ==============================================================================
 while IFS=';,' read -r SAMPLE_ID RPB2_COUNT EIF3E_COUNT PHASE_COUNT MAX_COPIES rest; do
     
     SAMPLE_ID=$(echo "$SAMPLE_ID" | tr -d '\r' | xargs)
     RPB2_COUNT=$(echo "$RPB2_COUNT" | tr -d '\r' | xargs)
     EIF3E_COUNT=$(echo "$EIF3E_COUNT" | tr -d '\r' | xargs)
+    PHASE_COUNT=$(echo "$PHASE_COUNT" | tr -d '\r' | xargs)
     MAX_COPIES=$(echo "$MAX_COPIES" | tr -d '\r' | xargs)
 
     if [ -z "$SAMPLE_ID" ]; then continue; fi
@@ -109,16 +107,13 @@ while IFS=';,' read -r SAMPLE_ID RPB2_COUNT EIF3E_COUNT PHASE_COUNT MAX_COPIES r
     for (( TESTED_PLOIDY=MAX_REAL; TESTED_PLOIDY<=MAX_COPIES; TESTED_PLOIDY++ )); do
         
         OUTPUT_FILE_PATH="${OUTPUT_DIR}/ss_${SAMPLE_ID}_${TESTED_PLOIDY}tips.Rev"
-        echo "Generuji skript pro: $SAMPLE_ID (Testovaná ploidie: $TESTED_PLOIDY) -> $OUTPUT_FILE_PATH"
+        echo "Generating script for: $SAMPLE_ID (Tested ploidy: $TESTED_PLOIDY) -> $OUTPUT_FILE_PATH"
 
-        # 1. DOPLNĚNÍ CHYBĚJÍCÍCH TAXA PRO TARGET
+        # ADD MISSING TAXA FOR TARGET SAMPLES
         BLANK_LINES_RPB2=""
         if [ "$RPB2_COUNT" -lt "$TESTED_PLOIDY" ]; then
             for (( j=RPB2_COUNT+1; j<=TESTED_PLOIDY; j++ )); do
                 BLANK_LINES_RPB2+="\ndata[1].addMissingTaxa(\"${SAMPLE_ID}_copy${j}\")"
-                # Abychom nespamovali report při každé testované ploidii, vypíšeme to jen jednou
-                if [ "$TESTED_PLOIDY" -eq "$MAX_COPIES" ]; then
-                fi
             done
         fi
 
@@ -126,12 +121,10 @@ while IFS=';,' read -r SAMPLE_ID RPB2_COUNT EIF3E_COUNT PHASE_COUNT MAX_COPIES r
         if [ "$EIF3E_COUNT" -lt "$TESTED_PLOIDY" ]; then
             for (( j=EIF3E_COUNT+1; j<=TESTED_PLOIDY; j++ )); do
                 BLANK_LINES_EIF3E+="\ndata[2].addMissingTaxa(\"${SAMPLE_ID}_copy${j}\")"
-                if [ "$TESTED_PLOIDY" -eq "$MAX_COPIES" ]; then
-                fi
             done
         fi
 
-        # 2. NASTAVENÍ FÁZÍ PRO TARGET
+        # SETTING OF THE PHASING FOR TARGET SAMPLES
         DYNAMIC_PHASE_LINES=""
         if [ "$TESTED_PLOIDY" -gt 1 ]; then
             DYNAMIC_PHASE_LINES+="    # Dynamic Target Sample Block\n"
@@ -143,7 +136,7 @@ while IFS=';,' read -r SAMPLE_ID RPB2_COUNT EIF3E_COUNT PHASE_COUNT MAX_COPIES r
             done
         fi
 
-        # 3. MOVES PRO TARGET
+        # MOVES FOR TARGET SAMPLES
         DYNAMIC_MOVES=""
         if [ "$TESTED_PLOIDY" -eq 2 ]; then
             DYNAMIC_MOVES+="    moves[++mvi] = mvHomeologPhase(ctmc[i], \"${SAMPLE_ID}_A\", \"${SAMPLE_ID}_B\", weight=2)\n"
@@ -156,7 +149,7 @@ while IFS=';,' read -r SAMPLE_ID RPB2_COUNT EIF3E_COUNT PHASE_COUNT MAX_COPIES r
         fi
 
         # ======================================================================
-        # Zápis do .Rev souboru
+        # .Rev file itself
         # ======================================================================
         cat << EOF > "$OUTPUT_FILE_PATH"
 #
@@ -310,6 +303,11 @@ EOF
 
     done
 done < <(tail -n +2 "$TARGET_CSV")
+
+
+# ======================================================================
+# MONITORS & RUN for the final script (if needed to change back according to author's original code)
+# ======================================================================
 
 ## --- MONITORS & RUN ---
 #mni = 0

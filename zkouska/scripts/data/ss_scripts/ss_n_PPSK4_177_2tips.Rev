@@ -145,28 +145,17 @@ mymodel = model(Q)
 # --- MONITORS & RUN ---
 mni = 0
 monitors[++mni] = mnModel(filename=output_file + ".log", printgen=1)
-monitors[++mni] = mnFile(filename=output_file + ".trees", printgen=1, tree)
 monitors[++mni] = mnScreen(printgen=1)
+
 for (i in 1:num_loci){
     monitors[++mni] = mnHomeologPhase(filename=output_file + "_locus_" + i + "_phase.log", printgen=1, ctmc[i])
 }
 
-if (bayes_factors) {
-    pow_p = powerPosterior(mymodel, moves, monitors, output_file + ".out", cats=50, sampleFreq=1) 
-    pow_p.burnin(generations=200, tuningInterval=50)
-    pow_p.run(generations=1000)  
-    ss = steppingStoneSampler(file=output_file + ".out", powerColumnName="power", likelihoodColumnName="likelihood")
-    print(ss.marginal())
-} else {
-    pow_p = powerPosterior(mymodel, moves, monitors, output_file + ".out", cats=50, sampleFreq=1) 
-    pow_p.burnin(generations=200, tuningInterval=50)
-    pow_p.run(generations=1000)
-    ss = steppingStoneSampler(file=output_file + ".out", powerColumnName="power", likelihoodColumnName="likelihood")
-    print(ss.marginal())
+pow_p = powerPosterior(mymodel, moves, monitors, output_file + ".out", cats=50, sampleFreq=1) 
+pow_p.burnin(generations=200, tuningInterval=50)
+pow_p.run(generations=1000)  
+ss = steppingStoneSampler(file=output_file + ".out", powerColumnName="power", likelihoodColumnName="likelihood")
 
-    # summarize results
-    treetrace = readTreeTrace(output_file + ".trees", treetype="non-clock", burnin=0.25) 
-    map_tree = mapTree(treetrace, output_file + "_map.tree")
-    mcc_tree = mccTree(treetrace, output_file + "_mcc.tree")
-}
+print(ss.marginal())
+
 
