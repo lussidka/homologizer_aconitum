@@ -46,7 +46,7 @@ for GENE in "${GENES[@]}"; do
     # Dynamické dohledání všech kopií/alel pro CORE vzorky přímo v NEXUSu
     ACTUAL_CORE_COPIES=()
     for core_base in "${CORE_SAMPLES[@]}"; do
-        found_copies=($(grep -o -E "${core_base}_[a-zA-Z0-9]*" "$NEXUS_FILE" | sort -u))
+        found_copies=($(grep -o -E "${core_base}[a-zA-Z0-9]*" "$NEXUS_FILE" | sort -u))
 
         if [ ${#found_copies[@]} -eq 0 ]; then
             echo "⚠️ Varování: Core vzorek '$core_base' nebyl v NEXUS souboru nalezen!"
@@ -68,7 +68,7 @@ for GENE in "${GENES[@]}"; do
             if [[ -z "$TARGET_SAMPLE" ]]; then continue; fi
 
         # Dohledání všech kopií pro cílový vzorek v NEXUSu
-        ACTUAL_TARGET_COPIES=($(grep -o -E "${TARGET_SAMPLE}_[a-zA-Z0-9]*" "$NEXUS_FILE" | sort -u))
+        ACTUAL_TARGET_COPIES=($(grep -o -E "${TARGET_SAMPLE}[a-zA-Z0-9]*" "$NEXUS_FILE" | sort -u))
         NUM_TARGET=${#ACTUAL_TARGET_COPIES[@]}
 
         if [ "$NUM_TARGET" -eq 0 ]; then
