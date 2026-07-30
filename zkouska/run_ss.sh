@@ -5,7 +5,7 @@ SCRIPT_DIR="scripts/data/ss_scripts"
 LOG_DIR="scripts/data/ss_MaLiOutputs"
 mkdir -p "$LOG_DIR"
 
-# Cyklus, který najde všechny .Rev soubory ve vaší složce
+# cycle for searching for .Rev files in the directory
 for rev_script in "$SCRIPT_DIR"/*.Rev; do
     
     # Insurance: if the directory is empty, the loop will be skipped
