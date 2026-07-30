@@ -57,3 +57,10 @@ Usage:
 - Populate `data/samples.xlsx` or `data/samples.csv` and `data/input.nex`
 - Run: `snakemake -j <cores>`
 )
+
+
+nex soubory - vyreseno
+ss analyza 
+tabulka kam se bude ss zapisovat
+vypocty uvnitr tabulky
+    -> cele do snakefilu

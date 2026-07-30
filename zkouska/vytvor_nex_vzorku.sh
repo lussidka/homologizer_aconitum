@@ -9,7 +9,7 @@ GENES=("EIF3E" "RPB2")
 CORE_CSV_FILE="scripts/data/core_vzorky.csv" # Tabulka s tvými 7 (či více) stálými vzorky
 TARGET_CSV_FILE="scripts/data/dalsi_vzorky.csv" # Tabulka se vzorky, které se budou doplňovat
 
-OUTPUT_DIR="scripts/data/male_nexus_soubory"
+OUTPUT_DIR="scripts/data/ss_scripty/male_nexus_soubory"
 
 
 mkdir -p "$OUTPUT_DIR"
@@ -46,7 +46,7 @@ for GENE in "${GENES[@]}"; do
     # Dynamické dohledání všech kopií/alel pro CORE vzorky přímo v NEXUSu
     ACTUAL_CORE_COPIES=()
     for core_base in "${CORE_SAMPLES[@]}"; do
-        found_copies=($(grep -o -E "${core_base}[_a-zA-Z0-9]*" "$NEXUS_FILE" | sort -u))
+        found_copies=($(grep -o -E "${core_base}_[a-zA-Z0-9]*" "$NEXUS_FILE" | sort -u))
 
         if [ ${#found_copies[@]} -eq 0 ]; then
             echo "⚠️ Varování: Core vzorek '$core_base' nebyl v NEXUS souboru nalezen!"
@@ -68,7 +68,7 @@ for GENE in "${GENES[@]}"; do
             if [[ -z "$TARGET_SAMPLE" ]]; then continue; fi
 
         # Dohledání všech kopií pro cílový vzorek v NEXUSu
-        ACTUAL_TARGET_COPIES=($(grep -o -E "${TARGET_SAMPLE}[_a-zA-Z0-9]*" "$NEXUS_FILE" | sort -u))
+        ACTUAL_TARGET_COPIES=($(grep -o -E "${TARGET_SAMPLE}_[a-zA-Z0-9]*" "$NEXUS_FILE" | sort -u))
         NUM_TARGET=${#ACTUAL_TARGET_COPIES[@]}
 
         if [ "$NUM_TARGET" -eq 0 ]; then

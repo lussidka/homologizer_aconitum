@@ -25,10 +25,8 @@ CORE_PHASE_FIXED_L1=""
 CORE_PHASE_FIXED_L2=""
 CORE_MOVES=""
 
-# Projdeme CORE vzorky a nabalíme jejich strukturu do globálních proměnných
-while IFS=';' read -r C_SAMPLE_ID C_RPB2_COUNT C_EIF3E_COUNT C_PHASE_COUNT C_MAX_COPIES rest; do
+while IFS=';,' read -r C_SAMPLE_ID C_RPB2_COUNT C_EIF3E_COUNT C_PHASE_COUNT C_MAX_COPIES rest; do
     
-    # Odstranění bílých znaků
     C_SAMPLE_ID=$(echo "$C_SAMPLE_ID" | tr -d '\r' | xargs)
     C_RPB2_COUNT=$(echo "$C_RPB2_COUNT" | tr -d '\r' | xargs)
     C_EIF3E_COUNT=$(echo "$C_EIF3E_COUNT" | tr -d '\r' | xargs)
@@ -37,19 +35,16 @@ while IFS=';' read -r C_SAMPLE_ID C_RPB2_COUNT C_EIF3E_COUNT C_PHASE_COUNT C_MAX
 
     if [ -z "$C_SAMPLE_ID" ]; then continue; fi
     
-    # Zjistíme skutečné maximum reálných kopií
-    C_MAX_REAL=$(( C_RPB2_COUNT > C_EIF3E_COUNT ? C_RPB2_COUNT : C_EIF3E_COUNT ))
-
-    # 1. DOPLNĚNÍ BLANK TAXA PRO CORE VZORKY
+    # 1. DOPLNĚNÍ CHYBĚJÍCÍCH TAXA PRO CORE VZORKY (vše se jmenuje _copyX)
     if [ "$C_RPB2_COUNT" -lt "$C_PHASE_COUNT" ]; then
         for (( j=C_RPB2_COUNT+1; j<=C_PHASE_COUNT; j++ )); do
-            CORE_BLANK_RPB2+="\ndata[1].addMissingTaxa(\"${C_SAMPLE_ID}_copy${j}_BLANK\")"
+            CORE_BLANK_RPB2+="\ndata[1].addMissingTaxa(\"${C_SAMPLE_ID}_copy${j}\")"
         done
     fi
 
     if [ "$C_EIF3E_COUNT" -lt "$C_PHASE_COUNT" ]; then
         for (( j=C_EIF3E_COUNT+1; j<=C_PHASE_COUNT; j++ )); do
-            CORE_BLANK_EIF3E+="\ndata[2].addMissingTaxa(\"${C_SAMPLE_ID}_copy${j}_BLANK\")"
+            CORE_BLANK_EIF3E+="\ndata[2].addMissingTaxa(\"${C_SAMPLE_ID}_copy${j}\")"
         done
     fi
 
@@ -57,7 +52,6 @@ while IFS=';' read -r C_SAMPLE_ID C_RPB2_COUNT C_EIF3E_COUNT C_PHASE_COUNT C_MAX
     # ROZDĚLENÍ LOGIKY: FIXNÍ vs. DYNAMICKÉ VZORKY
     # ==========================================================================
     if [ "$C_SAMPLE_ID" == "n_VJJS2_011" ]; then
-        # Zde natvrdo definujeme fázování podle obrázku (bez generování 'moves'!)
         
         # Lokus 1 (RPB2)
         CORE_PHASE_FIXED_L1+="    # $C_SAMPLE_ID (FIXED)\n"
@@ -71,27 +65,17 @@ while IFS=';' read -r C_SAMPLE_ID C_RPB2_COUNT C_EIF3E_COUNT C_PHASE_COUNT C_MAX
         CORE_PHASE_FIXED_L2+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy2\", \"${C_SAMPLE_ID}_B\")\n"
         CORE_PHASE_FIXED_L2+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy1\", \"${C_SAMPLE_ID}_C\")\n"
 
-        # Schválně tu CHYBÍ blok pro CORE_MOVES, protože nesmíme dovolit záměny!
-
     else
-        # 2. NASTAVENÍ FÁZÍ PRO BĚŽNÉ DYNAMICKÉ CORE VZORKY (např. deg_UMA2_112)
+        # 2. NASTAVENÍ FÁZÍ PRO BĚŽNÉ DYNAMICKÉ CORE VZORKY
         if [ "$C_PHASE_COUNT" -gt 1 ]; then
             CORE_PHASE_DYNAMIC+="    # $C_SAMPLE_ID\n"
             C_CURRENT_LETTER_IDX=1
             
-            # A. Přiřazení reálných kopií
-            for (( c=1; c<=C_MAX_REAL; c++ )); do
+            # Jednoduchý cyklus od 1 do konečného počtu fází (nerozlišujeme reálné/umělé)
+            for (( c=1; c<=C_PHASE_COUNT; c++ )); do
                 CORE_PHASE_DYNAMIC+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy${c}\", \"${C_SAMPLE_ID}_${LETTERS[$C_CURRENT_LETTER_IDX]}\")\n"
                 ((C_CURRENT_LETTER_IDX++))
             done
-
-            # B. Přiřazení BLANK kopií
-            if [ "$C_MAX_REAL" -lt "$C_PHASE_COUNT" ]; then
-                 for (( j=C_MAX_REAL+1; j<=C_PHASE_COUNT; j++ )); do
-                     CORE_PHASE_DYNAMIC+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy${j}_BLANK\", \"${C_SAMPLE_ID}_${LETTERS[$C_CURRENT_LETTER_IDX]}\")\n"
-                     ((C_CURRENT_LETTER_IDX++))
-                 done
-            fi
         fi
 
         # 3. MOVES PRO DYNAMICKÉ CORE VZORKY
@@ -109,11 +93,10 @@ while IFS=';' read -r C_SAMPLE_ID C_RPB2_COUNT C_EIF3E_COUNT C_PHASE_COUNT C_MAX
 done < <(tail -n +2 "$CORE_CSV")
 
 # ==============================================================================
-# 1. ZPRACOVÁNÍ TARGET VZORKŮ (Hlavní cyklus a generování skriptů)
+# 1. ZPRACOVÁNÍ TARGET VZORKŮ 
 # ==============================================================================
-while IFS=';' read -r SAMPLE_ID RPB2_COUNT EIF3E_COUNT PHASE_COUNT MAX_COPIES rest; do
+while IFS=';,' read -r SAMPLE_ID RPB2_COUNT EIF3E_COUNT PHASE_COUNT MAX_COPIES rest; do
     
-    # Odstranění bílých znaků
     SAMPLE_ID=$(echo "$SAMPLE_ID" | tr -d '\r' | xargs)
     RPB2_COUNT=$(echo "$RPB2_COUNT" | tr -d '\r' | xargs)
     EIF3E_COUNT=$(echo "$EIF3E_COUNT" | tr -d '\r' | xargs)
@@ -121,47 +104,43 @@ while IFS=';' read -r SAMPLE_ID RPB2_COUNT EIF3E_COUNT PHASE_COUNT MAX_COPIES re
 
     if [ -z "$SAMPLE_ID" ]; then continue; fi
 
-    # Zjistíme skutečné maximum reálných kopií
     MAX_REAL=$(( RPB2_COUNT > EIF3E_COUNT ? RPB2_COUNT : EIF3E_COUNT ))
 
-    # Teprve tady začíná cyklus zkoušení různých ploidií pro tento TARGET vzorek
     for (( TESTED_PLOIDY=MAX_REAL; TESTED_PLOIDY<=MAX_COPIES; TESTED_PLOIDY++ )); do
         
         OUTPUT_FILE_PATH="${OUTPUT_DIR}/ss_${SAMPLE_ID}_${TESTED_PLOIDY}tips.Rev"
         echo "Generuji skript pro: $SAMPLE_ID (Testovaná ploidie: $TESTED_PLOIDY) -> $OUTPUT_FILE_PATH"
 
-        # 1. DOPLNĚNÍ BLANK TAXA PRO TARGET
+        # 1. DOPLNĚNÍ CHYBĚJÍCÍCH TAXA PRO TARGET
         BLANK_LINES_RPB2=""
         if [ "$RPB2_COUNT" -lt "$TESTED_PLOIDY" ]; then
             for (( j=RPB2_COUNT+1; j<=TESTED_PLOIDY; j++ )); do
-                BLANK_LINES_RPB2+="\ndata[1].addMissingTaxa(\"${SAMPLE_ID}_copy${j}_BLANK\")"
+                BLANK_LINES_RPB2+="\ndata[1].addMissingTaxa(\"${SAMPLE_ID}_copy${j}\")"
+                # Abychom nespamovali report při každé testované ploidii, vypíšeme to jen jednou
+                if [ "$TESTED_PLOIDY" -eq "$MAX_COPIES" ]; then
+                fi
             done
         fi
 
         BLANK_LINES_EIF3E=""
         if [ "$EIF3E_COUNT" -lt "$TESTED_PLOIDY" ]; then
             for (( j=EIF3E_COUNT+1; j<=TESTED_PLOIDY; j++ )); do
-                BLANK_LINES_EIF3E+="\ndata[2].addMissingTaxa(\"${SAMPLE_ID}_copy${j}_BLANK\")"
+                BLANK_LINES_EIF3E+="\ndata[2].addMissingTaxa(\"${SAMPLE_ID}_copy${j}\")"
+                if [ "$TESTED_PLOIDY" -eq "$MAX_COPIES" ]; then
+                fi
             done
         fi
 
-        # 2. NASTAVENÍ FÁZÍ PRO TARGET (zápis jen pokud testovaná ploidie > 1)
+        # 2. NASTAVENÍ FÁZÍ PRO TARGET
         DYNAMIC_PHASE_LINES=""
         if [ "$TESTED_PLOIDY" -gt 1 ]; then
             DYNAMIC_PHASE_LINES+="    # Dynamic Target Sample Block\n"
             CURRENT_LETTER_IDX=1
             
-            for (( c=1; c<=MAX_REAL; c++ )); do
+            for (( c=1; c<=TESTED_PLOIDY; c++ )); do
                 DYNAMIC_PHASE_LINES+="    data[i].setHomeologPhase(\"${SAMPLE_ID}_copy${c}\", \"${SAMPLE_ID}_${LETTERS[$CURRENT_LETTER_IDX]}\")\n"
                 ((CURRENT_LETTER_IDX++))
             done
-
-            if [ "$MAX_REAL" -lt "$TESTED_PLOIDY" ]; then
-                 for (( j=MAX_REAL+1; j<=TESTED_PLOIDY; j++ )); do
-                     DYNAMIC_PHASE_LINES+="    data[i].setHomeologPhase(\"${SAMPLE_ID}_copy${j}_BLANK\", \"${SAMPLE_ID}_${LETTERS[$CURRENT_LETTER_IDX]}\")\n"
-                     ((CURRENT_LETTER_IDX++))
-                 done
-            fi
         fi
 
         # 3. MOVES PRO TARGET
@@ -191,8 +170,8 @@ bayes_factors = FALSE
 output_file = "output/stepping_stone_${SAMPLE_ID}_${TESTED_PLOIDY}"
 
 # input sequence alignments
-alignments = ["data/${SAMPLE_ID}_RPB2.nex",
-              "data/${SAMPLE_ID}_EIF3E.nex"]
+alignments = ["male_nexus_soubory/RPB2_${SAMPLE_ID}.nex",
+              "male_nexus_soubory/EIF3E_${SAMPLE_ID}.nex"]
 num_loci = alignments.size()
 
 for (i in 1:num_loci) {
@@ -201,11 +180,18 @@ for (i in 1:num_loci) {
 
 # --- MISSING TAXA FOR CORE SAMPLES ---$(echo -e "$CORE_BLANK_RPB2")$(echo -e "$CORE_BLANK_EIF3E")
 
-# --- DYNAMIC MISSING TAXA (BLANKS) FOR TARGET SAMPLE ---$(echo -e "$BLANK_LINES_RPB2")$(echo -e "$BLANK_LINES_EIF3E")
+# --- MISSING TAXA FOR TARGET SAMPLE ---$(echo -e "$BLANK_LINES_RPB2")$(echo -e "$BLANK_LINES_EIF3E")
+
+# PŘESUNUTO: add missing taxa globally
+for (i in 1:num_loci) {
+    for (j in 1:num_loci) {
+        data[i].addMissingTaxa(data[j].taxa())
+    }
+}
 
 # --- INITIAL PHASE SETUP ---
 for (i in 1:num_loci) {
-    # Dynamické Core vzorky (např. deg_UMA2_112)
+    # Dynamické Core vzorky
 $(echo -e "$CORE_PHASE_DYNAMIC")
 $(echo -e "$DYNAMIC_PHASE_LINES")
 }
@@ -218,13 +204,6 @@ $(echo -e "$CORE_PHASE_FIXED_L1")
 # Fixní Core vzorky - Lokus 2
 for (i in 2:2) {
 $(echo -e "$CORE_PHASE_FIXED_L2")
-}
-
-# add missing taxa 
-for (i in 1:num_loci) {
-    for (j in 1:num_loci) {
-        data[i].addMissingTaxa(data[j].taxa())
-    }
 }
 
 num_tips = data[1].ntaxa()
@@ -301,7 +280,7 @@ for (i in 2:2) {
 for (i in 1:num_loci) {
     # Core Samples Moves
 $(echo -e "$CORE_MOVES")
-    # Dynamic Moves for Target Sample based on TESTED_TIPS ($TESTED_PLOIDY)
+    # Dynamic Moves for Target Sample
 $(echo -e "$DYNAMIC_MOVES")
 }
 
@@ -313,32 +292,49 @@ mymodel = model(Q)
 # --- MONITORS & RUN ---
 mni = 0
 monitors[++mni] = mnModel(filename=output_file + ".log", printgen=1)
-monitors[++mni] = mnFile(filename=output_file + ".trees", printgen=1, tree)
 monitors[++mni] = mnScreen(printgen=1)
+
 for (i in 1:num_loci){
     monitors[++mni] = mnHomeologPhase(filename=output_file + "_locus_" + i + "_phase.log", printgen=1, ctmc[i])
 }
 
-if (bayes_factors) {
-    pow_p = powerPosterior(mymodel, moves, monitors, output_file + ".out", cats=50, sampleFreq=1) 
-    pow_p.burnin(generations=200, tuningInterval=50)
-    pow_p.run(generations=1000)  
-    ss = steppingStoneSampler(file=output_file + ".out", powerColumnName="power", likelihoodColumnName="likelihood")
-    print(ss.marginal())
-} else {
-    pow_p = powerPosterior(mymodel, moves, monitors, output_file + ".out", cats=50, sampleFreq=1) 
-    pow_p.burnin(generations=200, tuningInterval=50)
-    pow_p.run(generations=1000)
-    ss = steppingStoneSampler(file=output_file + ".out", powerColumnName="power", likelihoodColumnName="likelihood")
-    print(ss.marginal())
+pow_p = powerPosterior(mymodel, moves, monitors, output_file + ".out", cats=50, sampleFreq=1) 
+pow_p.burnin(generations=200, tuningInterval=50)
+pow_p.run(generations=1000)  
+ss = steppingStoneSampler(file=output_file + ".out", powerColumnName="power", likelihoodColumnName="likelihood")
 
-    # summarize results
-    treetrace = readTreeTrace(output_file + ".trees", treetype="non-clock", burnin=0.25) 
-    map_tree = mapTree(treetrace, output_file + "_map.tree")
-    mcc_tree = mccTree(treetrace, output_file + "_mcc.tree")
-}
+print(ss.marginal())
+
 
 EOF
 
     done
 done < <(tail -n +2 "$TARGET_CSV")
+
+## --- MONITORS & RUN ---
+#mni = 0
+#monitors[++mni] = mnModel(filename=output_file + ".log", printgen=1)
+#monitors[++mni] = mnFile(filename=output_file + ".trees", printgen=1, tree)
+#monitors[++mni] = mnScreen(printgen=1)
+#for (i in 1:num_loci){
+#    monitors[++mni] = mnHomeologPhase(filename=output_file + "_locus_" + i + "_phase.log", printgen=1, ctmc[i])
+#}
+#
+#if (bayes_factors) {
+#    pow_p = powerPosterior(mymodel, moves, monitors, output_file + ".out", cats=50, sampleFreq=1) 
+#    pow_p.burnin(generations=200, tuningInterval=50)
+#    pow_p.run(generations=1000)  
+#    ss = steppingStoneSampler(file=output_file + ".out", powerColumnName="power", likelihoodColumnName="likelihood")
+#    print(ss.marginal())
+#} else {
+#    pow_p = powerPosterior(mymodel, moves, monitors, output_file + ".out", cats=50, sampleFreq=1) 
+#    pow_p.burnin(generations=200, tuningInterval=50)
+#    pow_p.run(generations=1000)
+#    ss = steppingStoneSampler(file=output_file + ".out", powerColumnName="power", likelihoodColumnName="likelihood")
+#    print(ss.marginal())
+#
+#    # summarize results
+#    treetrace = readTreeTrace(output_file + ".trees", treetype="non-clock", burnin=0.25) 
+#    map_tree = mapTree(treetrace, output_file + "_map.tree")
+#    mcc_tree = mccTree(treetrace, output_file + "_mcc.tree")
+#}

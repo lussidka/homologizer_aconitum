@@ -9,8 +9,8 @@ bayes_factors = FALSE
 output_file = "output/stepping_stone_n_BDZKH5_128_3"
 
 # input sequence alignments
-alignments = ["data/n_BDZKH5_128_RPB2.nex",
-              "data/n_BDZKH5_128_EIF3E.nex"]
+alignments = ["male_nexus_soubory/RPB2_n_BDZKH5_128.nex",
+              "male_nexus_soubory/EIF3E_n_BDZKH5_128.nex"]
 num_loci = alignments.size()
 
 for (i in 1:num_loci) {
@@ -18,15 +18,22 @@ for (i in 1:num_loci) {
 }
 
 # --- MISSING TAXA FOR CORE SAMPLES ---
-data[1].addMissingTaxa("n_VJJS2_011_copy3_BLANK")
-data[1].addMissingTaxa("deg_UMA2_112_copy2_BLANK")
+data[1].addMissingTaxa("n_VJJS2_011_copy3")
+data[1].addMissingTaxa("deg_UMA2_112_copy2")
 
-# --- DYNAMIC MISSING TAXA (BLANKS) FOR TARGET SAMPLE ---
-data[1].addMissingTaxa("n_BDZKH5_128_copy3_BLANK")
+# --- MISSING TAXA FOR TARGET SAMPLE ---
+data[1].addMissingTaxa("n_BDZKH5_128_copy3")
+
+# PŘESUNUTO: add missing taxa globally
+for (i in 1:num_loci) {
+    for (j in 1:num_loci) {
+        data[i].addMissingTaxa(data[j].taxa())
+    }
+}
 
 # --- INITIAL PHASE SETUP ---
 for (i in 1:num_loci) {
-    # Dynamické Core vzorky (např. deg_UMA2_112)
+    # Dynamické Core vzorky
     # deg_UMA2_112
     data[i].setHomeologPhase("deg_UMA2_112_copy1", "deg_UMA2_112_A")
     data[i].setHomeologPhase("deg_UMA2_112_copy2", "deg_UMA2_112_B")
@@ -50,13 +57,6 @@ for (i in 2:2) {
     data[i].setHomeologPhase("n_VJJS2_011_copy3", "n_VJJS2_011_A")
     data[i].setHomeologPhase("n_VJJS2_011_copy2", "n_VJJS2_011_B")
     data[i].setHomeologPhase("n_VJJS2_011_copy1", "n_VJJS2_011_C")
-}
-
-# add missing taxa globally
-for (i in 1:num_loci) {
-    for (j in 1:num_loci) {
-        data[i].addMissingTaxa(data[j].taxa())
-    }
 }
 
 num_tips = data[1].ntaxa()
@@ -133,7 +133,7 @@ for (i in 2:2) {
 for (i in 1:num_loci) {
     # Core Samples Moves
     moves[++mvi] = mvHomeologPhase(ctmc[i], "deg_UMA2_112_A", "deg_UMA2_112_B", weight=2)
-    # Dynamic Moves for Target Sample based on TESTED_TIPS (3)
+    # Dynamic Moves for Target Sample
     moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BDZKH5_128_A", "n_BDZKH5_128_B", weight=2)
     moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BDZKH5_128_A", "n_BDZKH5_128_C", weight=2)
     moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BDZKH5_128_B", "n_BDZKH5_128_C", weight=2)
