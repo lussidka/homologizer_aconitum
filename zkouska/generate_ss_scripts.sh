@@ -175,12 +175,6 @@ for (i in 1:num_loci) {
 
 # --- MISSING TAXA FOR TARGET SAMPLE ---$(echo -e "$BLANK_LINES_RPB2")$(echo -e "$BLANK_LINES_EIF3E")
 
-# PŘESUNUTO: add missing taxa globally
-for (i in 1:num_loci) {
-    for (j in 1:num_loci) {
-        data[i].addMissingTaxa(data[j].taxa())
-    }
-}
 
 # --- INITIAL PHASE SETUP ---
 for (i in 1:num_loci) {
@@ -197,6 +191,13 @@ $(echo -e "$CORE_PHASE_FIXED_L1")
 # Fixní Core vzorky - Lokus 2
 for (i in 2:2) {
 $(echo -e "$CORE_PHASE_FIXED_L2")
+}
+
+# PŘESUNUTO: add missing taxa globally
+for (i in 1:num_loci) {
+    for (j in 1:num_loci) {
+        data[i].addMissingTaxa(data[j].taxa())
+    }
 }
 
 num_tips = data[1].ntaxa()
