@@ -18,27 +18,34 @@ for (i in 1:num_loci) {
 }
 
 # --- MISSING TAXA FOR CORE SAMPLES ---
-data[1].addMissingTaxa("n_VJJS2_011_copy3")
-data[1].addMissingTaxa("deg_UMA2_112_copy2")
+data[1].addMissingTaxa("n_VJJS2_011_BLANK1")
+data[1].addMissingTaxa("deg_UMA2_112_BLANK1")
 
 # --- MISSING TAXA FOR TARGET SAMPLE ---
-data[1].addMissingTaxa("n_PPSK4_177_copy2")
-data[1].addMissingTaxa("n_PPSK4_177_copy3")
-data[2].addMissingTaxa("n_PPSK4_177_copy2")
-data[2].addMissingTaxa("n_PPSK4_177_copy3")
-
+data[1].addMissingTaxa("n_PPSK4_177_BLANK1")
+data[1].addMissingTaxa("n_PPSK4_177_BLANK2")
+data[2].addMissingTaxa("n_PPSK4_177_BLANK1")
+data[2].addMissingTaxa("n_PPSK4_177_BLANK2")
 
 # --- INITIAL PHASE SETUP ---
-for (i in 1:num_loci) {
-    # Dynamické Core vzorky
-    # deg_UMA2_112
-    data[i].setHomeologPhase("deg_UMA2_112_copy1", "deg_UMA2_112_A")
-    data[i].setHomeologPhase("deg_UMA2_112_copy2", "deg_UMA2_112_B")
-    # Dynamic Target Sample Block
-    data[i].setHomeologPhase("n_PPSK4_177_copy1", "n_PPSK4_177_A")
-    data[i].setHomeologPhase("n_PPSK4_177_copy2", "n_PPSK4_177_B")
-    data[i].setHomeologPhase("n_PPSK4_177_copy3", "n_PPSK4_177_C")
-}
+# Locus 1 Setup (RPB2)
+    # deg_UMA2_112 (Locus 1)
+    data[1].setHomeologPhase("deg_UMA2_112_copy1", "deg_UMA2_112_A")
+    data[1].setHomeologPhase("deg_UMA2_112_BLANK1", "deg_UMA2_112_B")
+    # Dynamic Target Sample Block (Locus 1)
+    data[1].setHomeologPhase("n_PPSK4_177_copy1", "n_PPSK4_177_A")
+    data[1].setHomeologPhase("n_PPSK4_177_BLANK1", "n_PPSK4_177_B")
+    data[1].setHomeologPhase("n_PPSK4_177_BLANK2", "n_PPSK4_177_C")
+
+# Locus 2 Setup (EIF3E)
+    # deg_UMA2_112 (Locus 2)
+    data[2].setHomeologPhase("deg_UMA2_112_copy1", "deg_UMA2_112_A")
+    data[2].setHomeologPhase("deg_UMA2_112_copy2", "deg_UMA2_112_B")
+    # Dynamic Target Sample Block (Locus 2)
+    data[2].setHomeologPhase("n_PPSK4_177_copy1", "n_PPSK4_177_A")
+    data[2].setHomeologPhase("n_PPSK4_177_BLANK1", "n_PPSK4_177_B")
+    data[2].setHomeologPhase("n_PPSK4_177_BLANK2", "n_PPSK4_177_C")
+
 
 # Fixní Core vzorky - Lokus 1
 for (i in 1:1) {
@@ -56,7 +63,7 @@ for (i in 2:2) {
     data[i].setHomeologPhase("n_VJJS2_011_copy1", "n_VJJS2_011_C")
 }
 
-# PŘESUNUTO: add missing taxa globally
+# PŘESUNOUT? - add missing taxa 
 for (i in 1:num_loci) {
     for (j in 1:num_loci) {
         data[i].addMissingTaxa(data[j].taxa())
@@ -151,17 +158,39 @@ mymodel = model(Q)
 # --- MONITORS & RUN ---
 mni = 0
 monitors[++mni] = mnModel(filename=output_file + ".log", printgen=1)
+monitors[++mni] = mnFile(filename=output_file + ".trees", printgen=1, tree)
 monitors[++mni] = mnScreen(printgen=1)
 
 for (i in 1:num_loci){
     monitors[++mni] = mnHomeologPhase(filename=output_file + "_locus_" + i + "_phase.log", printgen=1, ctmc[i])
 }
 
-pow_p = powerPosterior(mymodel, moves, monitors, output_file + ".out", cats=50, sampleFreq=1) 
+if (bayes_factors) {
+
+    # running stepping stone analysis
+    pow_p = powerPosterior(mymodel, moves, monitors, output_file + ".out", cats=50, sampleFreq=1) 
+    pow_p.burnin(generations=200, tuningInterval=50)
+    pow_p.run(generations=1000)  
+    ss = steppingStoneSampler(file=output_file + ".out", powerColumnName="power", likelihoodColumnName="likelihood")
+
+    # print the marginal likelihood to screen
+    print(ss.marginal())
+
+} else {
+
+    # run MCMC 
+pow_p = powerPosterior(mymodel, moves, monitors, output_file + ".out", 
+                       cats=50, sampleFreq=1) 
 pow_p.burnin(generations=200, tuningInterval=50)
 pow_p.run(generations=1000)  
-ss = steppingStoneSampler(file=output_file + ".out", powerColumnName="power", likelihoodColumnName="likelihood")
-
+ss = steppingStoneSampler(file=output_file + ".out", 
+                          powerColumnName="power", likelihoodColumnName="likelihood")
 print(ss.marginal())
+
+    # summarize results
+    treetrace = readTreeTrace(output_file + ".trees", treetype="non-clock", burnin=0.25) 
+    map_tree = mapTree(treetrace, output_file + "_map.tree")
+    mcc_tree = mccTree(treetrace, output_file + "_mcc.tree")
+}
 
 

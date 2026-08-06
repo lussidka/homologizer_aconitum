@@ -1,4 +1,8 @@
 Sample;Ploidy;Run1;Run2;Run3;Average
+n_BDZKH5_128;3;-8085.759;Error:Pleasecheckformatoffile"output/stepping_stone_n_PPSK4_177_4.out",missingpowerandlikelihoodcolumnsinsomelines;Error:Pleasecheckformatoffile"output/stepping_stone_n_PPSK4_177_4.out",missingpowerandlikelihoodcolumnsinsomelines;
+n_BDZKH5_128;4;Error:Pleasecheckformatoffile"output/stepping_stone_n_BDZKH5_128_4.out",missingpowerandlikelihoodcolumnsinsomelines;Error:Pleasecheckformatoffile"output/stepping_stone_n_BDZKH5_128_4.out",missingpowerandlikelihoodcolumnsinsomelines;Error:Pleasecheckformatoffile"output/stepping_stone_n_BDZKH5_128_4.out",missingpowerandlikelihoodcolumnsinsomelines;
+n_BDZKHS_128;3;-999999.99;-999999.99;-999999.99;-999999.990
+n_BDZKHS_128;4;-999999.99;-999999.99;-999999.99;-999999.990
 n_PPSK4_177;1;-8278.835;-8391.656;-8134.128;-8268.206
 n_PPSK4_177;2;-8030.094;-8201.744;-8069.691;-8100.509
 n_PPSK4_177;3;-8039.081;-8063.168;-8143.145;-8081.798
