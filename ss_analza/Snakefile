@@ -1,0 +1,76 @@
+from pathlib import Path
+import csv
+
+# Snakemake pipeline for the stepping-stone analysis workflow.
+WORKDIR = Path(workflow.current_basedir).resolve()
+
+
+def load_target_samples():
+    target_csv = WORKDIR / "scripts" / "data" / "target_samples.csv"
+    rows = []
+    with target_csv.open("r", encoding="utf-8-sig", newline="") as fh:
+        reader = csv.DictReader(fh, delimiter=";")
+        for row in reader:
+            sample = (row.get("vzorek") or "").strip()
+            if not sample:
+                continue
+            rpb2 = int((row.get("RPB2") or "0").strip())
+            eif3e = int((row.get("Eif3E") or "0").strip())
+            max_copies = int((row.get("polyploidie") or "0").strip())
+            max_real = max(rpb2, eif3e)
+            ploidies = list(range(max_real, max_copies + 1))
+            rows.append((sample, ploidies))
+    return rows
+
+
+TARGET_SAMPLE_PLOIDIES = load_target_samples()
+TARGETS = [(sample, ploidy) for sample, ploidies in TARGET_SAMPLE_PLOIDIES for ploidy in ploidies]
+REPLICATES = [1, 2, 3]
+
+
+rule all:
+    input:
+        "scripts/txt_files/results_ss_values.csv"
+
+
+rule prepare_inputs:
+    input:
+        create_nex_script="create_nex.sh",
+        generate_scripts_script="generate_ss_scripts.sh",
+        core_csv="scripts/data/core_samples.csv",
+        target_csv="scripts/data/target_samples.csv",
+        eif3e_nexus="scripts/data/EIF3E_test.nex",
+        rpb2_nexus="scripts/data/RPB2_test.nex",
+    output:
+        touch("scripts/.prepare.done"),
+    params:
+        workdir=str(WORKDIR),
+    shell:
+        "cd {params.workdir} && bash create_nex.sh && bash generate_ss_scripts.sh"
+
+
+rule run_ss_replicate:
+    input:
+        prepared="scripts/.prepare.done",
+        rev="scripts/ss_{sample}_{ploidy}tips.Rev",
+    output:
+        "scripts/txt_files/ss_{sample}_{ploidy}tips_{replicate}.txt",
+    params:
+        workdir=str(WORKDIR),
+    shell:
+        "mkdir -p scripts/txt_files && cd {params.workdir} && C:/Users/rycht/Desktop/revbayes-v1.3.2/bin/rb {input.rev} > {output} && bash create_tab.sh"
+
+
+rule summarize_results:
+    input:
+        reps=[
+            f"scripts/txt_files/ss_{sample}_{ploidy}tips_{replicate}.txt"
+            for sample, ploidy in TARGETS
+            for replicate in REPLICATES
+        ],
+    output:
+        "scripts/txt_files/results_ss_values.csv",
+    params:
+        workdir=str(WORKDIR),
+    shell:
+        "cd {params.workdir} && bash add_values.sh"
