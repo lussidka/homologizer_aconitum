@@ -6,7 +6,7 @@
 
 CORE_CSV="scripts/data/core_samples.csv"
 TARGET_CSV="scripts/data/target_samples.csv"
-OUTPUT_DIR="scripts/data/ss_scripts"
+OUTPUT_DIR="scripts"
 
 mkdir -p "$OUTPUT_DIR"
 

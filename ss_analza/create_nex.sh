@@ -3,7 +3,7 @@
 GENES=("EIF3E" "RPB2")
 CORE_CSV_FILE="scripts/data/core_samples.csv" 
 TARGET_CSV_FILE="scripts/data/target_samples.csv" 
-OUTPUT_DIR="scripts/data/ss_scripts/nexus_files_samples"
+OUTPUT_DIR="scripts/nexus_files_samples"
 
 mkdir -p "$OUTPUT_DIR"
 

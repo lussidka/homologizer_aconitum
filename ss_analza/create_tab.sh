@@ -1,7 +1,7 @@
 #!/bin/bash
 
-LOG_DIR="scripts/data/ss_scripts/txt_files"
-RESULTS_CSV="scripts/data/ss_scripts/txt_files/results_ss.csv"
+LOG_DIR="scripts/txt_files"
+RESULTS_CSV="scripts/txt_files/results_ss.csv"
 
 mkdir -p scripts/data/ss_scripts/txt_files
 
