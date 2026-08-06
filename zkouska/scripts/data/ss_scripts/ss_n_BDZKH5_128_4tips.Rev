@@ -9,8 +9,8 @@ bayes_factors = FALSE
 output_file = "output/stepping_stone_n_BDZKH5_128_4"
 
 # input sequence alignments
-alignments = ["male_nexus_soubory/RPB2_n_BDZKH5_128.nex",
-              "male_nexus_soubory/EIF3E_n_BDZKH5_128.nex"]
+alignments = ["nexus_files_samples/RPB2_n_BDZKH5_128.nex",
+              "nexus_files_samples/EIF3E_n_BDZKH5_128.nex"]
 num_loci = alignments.size()
 
 for (i in 1:num_loci) {
@@ -26,12 +26,6 @@ data[1].addMissingTaxa("n_BDZKH5_128_copy3")
 data[1].addMissingTaxa("n_BDZKH5_128_copy4")
 data[2].addMissingTaxa("n_BDZKH5_128_copy4")
 
-# PŘESUNUTO: add missing taxa globally
-for (i in 1:num_loci) {
-    for (j in 1:num_loci) {
-        data[i].addMissingTaxa(data[j].taxa())
-    }
-}
 
 # --- INITIAL PHASE SETUP ---
 for (i in 1:num_loci) {
@@ -60,6 +54,13 @@ for (i in 2:2) {
     data[i].setHomeologPhase("n_VJJS2_011_copy3", "n_VJJS2_011_A")
     data[i].setHomeologPhase("n_VJJS2_011_copy2", "n_VJJS2_011_B")
     data[i].setHomeologPhase("n_VJJS2_011_copy1", "n_VJJS2_011_C")
+}
+
+# PŘESUNUTO: add missing taxa globally
+for (i in 1:num_loci) {
+    for (j in 1:num_loci) {
+        data[i].addMissingTaxa(data[j].taxa())
+    }
 }
 
 num_tips = data[1].ntaxa()

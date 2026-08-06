@@ -1,62 +1,67 @@
 #!/bin/bash
 
-RESULTS_CSV="scripts/data/all_results.csv"
-FINAL_REPORT="scripts/data/ss_recommended_ploidy.csv"
+LOG_DIR="scripts/data/ss_scripts/txt_files"
+RESULTS_CSV="scripts/data/ss_scripts/txt_files/results_ss.csv"
+FINAL_REPORT="scripts/data/ss_scripts/txt_files/ss_recommended_ploidy.csv"
 
 mkdir -p scripts/data
 
-# ------------------------------------------------------------------------------
-# PHASE 1: Launching of RevBayes scripts and extracting marginal likelihoods
-# ------------------------------------------------------------------------------
+# vytvoření hlavičky
+echo "Sample;Ploidy;Run1;Run2;Run3;Average" > "$RESULTS_CSV"
 
-for rev_script in "$SCRIPT_DIR"/*.Rev; do
-    
-    [ -e "$rev_script" ] || continue
-    
-    BASE_NAME=$(basename "$rev_script" .Rev)
-    
+for TXT1 in "$LOG_DIR"/*_1.txt; do
+
+    [ -e "$TXT1" ] || continue
+
+    BASE_NAME=$(basename "$TXT1" "_1.txt")
+
     SAMPLE_NAME=$(echo "$BASE_NAME" | sed 's/^ss_//; s/_[0-9]*tips$//')
     TESTED_PLOIDY=$(echo "$BASE_NAME" | grep -Eo '[0-9]+tips$' | grep -Eo '[0-9]+')
 
-    echo "=========================================================="
-    echo "Sample: $SAMPLE_NAME | Tested Ploidy: $TESTED_PLOIDY"
-    echo "=========================================================="
+    echo "===================================================="
+    echo "Sample: $SAMPLE_NAME | Tested ploidy: $TESTED_PLOIDY"
+    echo "===================================================="
 
-    # for three runs
     ML1=""
     ML2=""
     ML3=""
 
-    for run in {1..3}; do
+    for run in 1 2 3; do
+
         TXT_FILE="${LOG_DIR}/${BASE_NAME}_${run}.txt"
-        echo " -> Run ${run}/3..."
-        
-        # Launching RevBayes (adjust the path to rb if necessary)
-        rb "$rev_script" > "$TXT_FILE" 2>&1
-        
-        # Extracting the number
-        VAL=$(grep -A 1 "Step 50 / 50" "$TXT_FILE" | tail -n 1 | tr -d '[:space:]')
-        
-        # If the value is not found, we set it to an extremely low number so it doesn't win
-        if [ -z "$VAL" ] || [[ "$VAL" == *"*"* ]]; then
+
+        if [ ! -f "$TXT_FILE" ]; then
+            echo "  [!] Missing file: $TXT_FILE"
             VAL="-999999.99"
-            echo "    [!] Mistake of the extraction! Replacing with -999999.99"
+
+        else
+            VAL=$(grep -A1 "Step 50 / 50" "$TXT_FILE" | tail -n1 | tr -d '[:space:]')
+
+            if [ -z "$VAL" ] || [[ "$VAL" == *"*"* ]]; then
+                echo "  [!] Could not extract marginal likelihood from $TXT_FILE"
+                VAL="-999999.99"
+            fi
         fi
 
-        #for each run
-        if [ "$run" -eq 1 ]; then ML1=$VAL; fi
-        if [ "$run" -eq 2 ]; then ML2=$VAL; fi
-        if [ "$run" -eq 3 ]; then ML3=$VAL; fi
+        case $run in
+            1) ML1=$VAL ;;
+            2) ML2=$VAL ;;
+            3) ML3=$VAL ;;
+        esac
+
     done
 
-    # Calculate the average using the 'bc' calculator (rounded to 3 decimal places)
-    AVERAGE=$(echo "scale=3; ($ML1 + $ML2 + $ML3) / 3" | bc -l | awk '{printf "%.3f", $0}')
-    
-    echo "Average value for ploidy $TESTED_PLOIDY: $AVERAGE"
+    AVERAGE=$(echo "scale=3; ($ML1+$ML2+$ML3)/3" | bc -l | awk '{printf "%.3f",$0}')
+
+    echo "Average: $AVERAGE"
 
     echo "${SAMPLE_NAME};${TESTED_PLOIDY};${ML1};${ML2};${ML3};${AVERAGE}" >> "$RESULTS_CSV"
 
 done
+
+echo
+echo "Finished."
+echo "Results saved in: $RESULTS_CSV"
 
 
 # ------------------------------------------------------------------------------
@@ -140,7 +145,7 @@ if [ -n "$WARNINGS" ]; then
     echo ""
     
     # Hezký formátovaný výpis problémových vzorků do terminálu
-    while IFS=';' read -r vzorek ploidie bf evidence; do
+    while IFS=';' read -r sample ploidy bf evidence; do
         echo "  -> Sample: $sample"
         echo "     Recommended ploidy: $ploidy | Bayes factor: $bf ($evidence)"
         echo "     (Data may not be sufficiently informative for a definitive call.)"

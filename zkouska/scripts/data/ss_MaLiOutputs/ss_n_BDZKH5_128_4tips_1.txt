@@ -1,1 +1,0 @@
-run_ss.sh: line 28: C:UsersrychtDesktoprevbayes-v1.3.2_kopiebinrb.exe: command not found
