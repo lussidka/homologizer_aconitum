@@ -1,7 +1,7 @@
 from pathlib import Path
 import csv
 
-# Snakemake pipeline pro stepping-stone analýzu
+# Snakemake pipeline for the stepping-stone analysis workflow.
 WORKDIR = Path(workflow.current_basedir).resolve()
 
 
@@ -27,16 +27,12 @@ TARGET_SAMPLE_PLOIDIES = load_target_samples()
 TARGETS = [(sample, ploidy) for sample, ploidies in TARGET_SAMPLE_PLOIDIES for ploidy in ploidies]
 REPLICATES = [1, 2, 3]
 
-# ------------------------------------------------------------------------------
-# 1. CÍL PIPELINE
-# ------------------------------------------------------------------------------
+
 rule all:
     input:
         "scripts/txt_files/results_ss_values.csv"
 
-# ------------------------------------------------------------------------------
-# 2. PŘÍPRAVA DAT (Generování .nex a .Rev skriptů)
-# ------------------------------------------------------------------------------
+
 rule prepare_inputs:
     input:
         create_nex_script="create_nex.sh",
@@ -46,7 +42,6 @@ rule prepare_inputs:
         eif3e_nexus="scripts/data/EIF3E_test.nex",
         rpb2_nexus="scripts/data/RPB2_test.nex",
     output:
-        # Dynamicky naplánováno, že se vytvoří tyto RevBayes skripty
         revs=[f"scripts/ss_{sample}_{ploidy}tips.Rev" for sample, ploidy in TARGETS],
         done=touch("scripts/.prepare.done")
     params:
@@ -54,9 +49,7 @@ rule prepare_inputs:
     shell:
         "cd {params.workdir} && bash create_nex.sh && bash generate_ss_scripts.sh"
 
-# ------------------------------------------------------------------------------
-# 3. SAMOTNÝ VÝPOČET (RevBayes - bezpečně paralelně po jednom replikátu)
-# ------------------------------------------------------------------------------
+
 rule run_ss_replicate:
     input:
         prepared="scripts/.prepare.done",
@@ -66,36 +59,17 @@ rule run_ss_replicate:
     params:
         workdir=str(WORKDIR),
     shell:
-        "mkdir -p scripts/txt_files && cd {params.workdir} && rb {input.rev} > {output}"
+        "mkdir -p scripts/txt_files && cd {params.workdir} && rb {input.rev} > {output} && bash create_tab.sh"
 
-# ------------------------------------------------------------------------------
-# 4. EXTRACKE DAT (Sběr hodnot Marginal Likelihoods ze všech logů)
-# ------------------------------------------------------------------------------
-rule extract_raw_likelihoods:
+
+rule summarize_results:
     input:
-        # Snakemake počká, až se vytvoří ÚPLNĚ VŠECHNY .txt soubory
         reps=[
             f"scripts/txt_files/ss_{sample}_{ploidy}tips_{replicate}.txt"
             for sample, ploidy in TARGETS
             for replicate in REPLICATES
         ],
     output:
-        # Výstupem je hrubá tabulka
-        "scripts/txt_files/results_ss.csv",
-    params:
-        workdir=str(WORKDIR),
-    shell:
-        "cd {params.workdir} && bash create_tab.sh"
-
-# ------------------------------------------------------------------------------
-# 5. FINÁLNÍ STATISTIKA (Výpočet průměrů a Bayesových faktorů)
-# ------------------------------------------------------------------------------
-rule calculate_bayes_factors:
-    input:
-        # Spustí se až ve chvíli, kdy je hrubá tabulka hotová
-        "scripts/txt_files/results_ss.csv",
-    output:
-        # Finální tabulka s celkovou statistikou
         "scripts/txt_files/results_ss_values.csv",
     params:
         workdir=str(WORKDIR),
