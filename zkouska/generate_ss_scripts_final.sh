@@ -58,17 +58,30 @@ while IFS=';,' read -r C_SAMPLE_ID C_RPB2_COUNT C_EIF3E_COUNT C_PHASE_COUNT C_MA
     # ==========================================================================
     if [ "$C_SAMPLE_ID" == "n_VJJS2_011" ]; then
         
-        # Locus 1 (RPB2) - Assuming this one always has 3 copies based on your setup
+        # Pomocná funkce, která rozhodne, jestli je to "copyX" nebo "BLANKX" 
+        # podle skutečného počtu sekvencí v daném lokusu.
+        get_taxon_name() {
+            local copy_num=$1
+            local real_count=$2
+            if [ "$copy_num" -le "$real_count" ]; then
+                echo "${C_SAMPLE_ID}_copy${copy_num}"
+            else
+                local blank_num=$((copy_num - real_count))
+                echo "${C_SAMPLE_ID}_BLANK${blank_num}"
+            fi
+        }
+
+        # Locus 1 (RPB2)
         CORE_PHASE_FIXED_L1+="    # $C_SAMPLE_ID (FIXED)\n"
-        CORE_PHASE_FIXED_L1+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy3\", \"${C_SAMPLE_ID}_A\")\n"
-        CORE_PHASE_FIXED_L1+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy2\", \"${C_SAMPLE_ID}_B\")\n"
-        CORE_PHASE_FIXED_L1+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy1\", \"${C_SAMPLE_ID}_C\")\n"
+        CORE_PHASE_FIXED_L1+="    data[i].setHomeologPhase(\"$(get_taxon_name 3 $C_RPB2_COUNT)\", \"${C_SAMPLE_ID}_A\")\n"
+        CORE_PHASE_FIXED_L1+="    data[i].setHomeologPhase(\"$(get_taxon_name 2 $C_RPB2_COUNT)\", \"${C_SAMPLE_ID}_B\")\n"
+        CORE_PHASE_FIXED_L1+="    data[i].setHomeologPhase(\"$(get_taxon_name 1 $C_RPB2_COUNT)\", \"${C_SAMPLE_ID}_C\")\n"
 
         # Locus 2 (EIF3E)
         CORE_PHASE_FIXED_L2+="    # $C_SAMPLE_ID (FIXED)\n"
-        CORE_PHASE_FIXED_L2+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy3\", \"${C_SAMPLE_ID}_A\")\n"
-        CORE_PHASE_FIXED_L2+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy2\", \"${C_SAMPLE_ID}_B\")\n"
-        CORE_PHASE_FIXED_L2+="    data[i].setHomeologPhase(\"${C_SAMPLE_ID}_copy1\", \"${C_SAMPLE_ID}_C\")\n"
+        CORE_PHASE_FIXED_L2+="    data[i].setHomeologPhase(\"$(get_taxon_name 3 $C_EIF3E_COUNT)\", \"${C_SAMPLE_ID}_A\")\n"
+        CORE_PHASE_FIXED_L2+="    data[i].setHomeologPhase(\"$(get_taxon_name 2 $C_EIF3E_COUNT)\", \"${C_SAMPLE_ID}_B\")\n"
+        CORE_PHASE_FIXED_L2+="    data[i].setHomeologPhase(\"$(get_taxon_name 1 $C_EIF3E_COUNT)\", \"${C_SAMPLE_ID}_C\")\n"
 
     else
         # setting of the phasing for dynamic core samples (separated for L1 and L2)

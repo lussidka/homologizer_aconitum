@@ -47,7 +47,7 @@ data[1].addMissingTaxa("n_BDZKH5_128_BLANK1")
 # Fixní Core vzorky - Lokus 1
 for (i in 1:1) {
     # n_VJJS2_011 (FIXED)
-    data[i].setHomeologPhase("n_VJJS2_011_copy3", "n_VJJS2_011_A")
+    data[i].setHomeologPhase("n_VJJS2_011_BLANK1", "n_VJJS2_011_A")
     data[i].setHomeologPhase("n_VJJS2_011_copy2", "n_VJJS2_011_B")
     data[i].setHomeologPhase("n_VJJS2_011_copy1", "n_VJJS2_011_C")
 }
