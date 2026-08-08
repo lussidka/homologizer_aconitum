@@ -25,7 +25,7 @@ def load_target_samples():
 
 TARGET_SAMPLE_PLOIDIES = load_target_samples()
 TARGETS = [(sample, ploidy) for sample, ploidies in TARGET_SAMPLE_PLOIDIES for ploidy in ploidies]
-REPLICATES = [1, 2, 3]
+REPLICATES = [1, 2, 3, 4, 5]  # Počet replikátů pro každý vzorek a ploidii
 
 # ------------------------------------------------------------------------------
 # 1. CÍL PIPELINE
