@@ -58,9 +58,15 @@ Usage:
 - Run: `snakemake -j <cores>`
 )
 
+ss analyza - nechat vytvorit ke kazdemu vzorku 1 malou tabulku - a pak je na konec pospojovat + pridat values ?
 
-nex soubory - vyreseno
-ss analyza 
-tabulka kam se bude ss zapisovat
-vypocty uvnitr tabulky
-    -> cele do snakefilu
+homologizer 
+    - pouzit uz vygenrevoane scripty pro ty vzorky s poctem tips dle vysldku ss analyzy - jen vymenit jednu cast
+    - spustit je s core vzorky po jednom (po vice?)
+    - vytahnout z eRka jejich phasing do spolecny tabulky
+
+/ jak udelat vysledky pro eRko? aby se tam vše vešlo tak jak má 
+
+doplnit vzorky! 
+
+
