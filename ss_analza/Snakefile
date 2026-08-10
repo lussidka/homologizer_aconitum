@@ -66,8 +66,22 @@ rule run_ss_replicate:
     params:
         workdir=str(WORKDIR),
     shell:
-        "mkdir -p scripts/txt_files && cd {params.workdir}/scripts && rb ss_{wildcards.sample}_{wildcards.ploidy}tips.Rev > txt_files/ss_{wildcards.sample}_{wildcards.ploidy}tips_{wildcards.replicate}.txt"
-
+        """
+        # 1. Ujistíme se, že složka pro textové logy existuje
+        mkdir -p scripts/txt_files
+        
+        # 2. Vytvoříme unikátní pracovní složku pro tento konkrétní replikát
+        RUN_DIR="scripts/run_{wildcards.sample}_{wildcards.ploidy}tips_rep{wildcards.replicate}"
+        mkdir -p $RUN_DIR
+        
+        # 3. Zkopírujeme do ní .Rev skript a uděláme zástupce (symlink) na data, aby je RevBayes našel
+        cp {input.rev} $RUN_DIR/
+        ln -sf {params.workdir}/scripts/nexus_files_samples $RUN_DIR/nexus_files_samples
+        
+        # 4. Přesuneme se do této složky a spustíme výpočet naprosto izolovaně!
+        cd $RUN_DIR
+        rb ss_{wildcards.sample}_{wildcards.ploidy}tips.Rev > {params.workdir}/scripts/txt_files/ss_{wildcards.sample}_{wildcards.ploidy}tips_{wildcards.replicate}.txt
+        """
 # ------------------------------------------------------------------------------
 # 4. EXTRACKE DAT (Sběr hodnot Marginal Likelihoods ze všech logů)
 # ------------------------------------------------------------------------------
