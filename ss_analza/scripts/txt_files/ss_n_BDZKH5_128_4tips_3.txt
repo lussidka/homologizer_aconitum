@@ -61,5 +61,6 @@ Step 47 / 50		****************************************
 Step 48 / 50		****************************************
 Step 49 / 50		****************************************
 Step 50 / 50		****************************************
-   Error:	Please check format of file "output/stepping_stone_n_BDZKH5_128_4.out", missing power and likelihood columns in some lines
-   Error:	Problem processing line 166 in file "ss_n_BDZKH5_128_4tips.Rev"
+-8090.108
+   Error:	Could not read file named "stepping_stone_n_BDZKH5_128_4.trees" in directory named "output" because the file does not exist
+   Error:	Problem processing line 198 in file "ss_n_BDZKH5_128_4tips.Rev"

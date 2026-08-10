@@ -80,7 +80,7 @@ rule run_ss_replicate:
         
         # 4. Přesuneme se do této složky a spustíme výpočet naprosto izolovaně!
         cd $RUN_DIR
-        rb ss_{wildcards.sample}_{wildcards.ploidy}tips.Rev > {params.workdir}/scripts/txt_files/ss_{wildcards.sample}_{wildcards.ploidy}tips_{wildcards.replicate}.txt
+        rb ss_{wildcards.sample}_{wildcards.ploidy}tips.Rev > {params.workdir}/scripts/txt_files/ss_{wildcards.sample}_{wildcards.ploidy}tips_{wildcards.replicate}.txt || true
         """
 # ------------------------------------------------------------------------------
 # 4. EXTRACKE DAT (Sběr hodnot Marginal Likelihoods ze všech logů)

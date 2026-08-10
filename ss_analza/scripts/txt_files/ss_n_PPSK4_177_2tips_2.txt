@@ -61,4 +61,6 @@ Step 47 / 50		****************************************
 Step 48 / 50		****************************************
 Step 49 / 50		****************************************
 Step 50 / 50		****************************************
--8201.744
+-8031.294
+   Error:	Could not read file named "stepping_stone_n_PPSK4_177_2.trees" in directory named "output" because the file does not exist
+   Error:	Problem processing line 188 in file "ss_n_PPSK4_177_2tips.Rev"
