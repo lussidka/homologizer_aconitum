@@ -1,5 +1,5 @@
-   Successfully read one character matrix from file 'nexus_files_samples/RPB2_n_PPSK4_177.nex'
-   Successfully read one character matrix from file 'nexus_files_samples/EIF3E_n_PPSK4_177.nex'
+   Successfully read one character matrix from file 'nexus_files_samples/RPB2_n_JIZ5_160.nex'
+   Successfully read one character matrix from file 'nexus_files_samples/EIF3E_n_JIZ5_160.nex'
 
 Running burn-in phase of Power Posterior sampler for 200 iterations.
 The simulator uses 43 different moves in a random move schedule with 151 moves per iteration
@@ -61,5 +61,5 @@ Step 47 / 50		****************************************
 Step 48 / 50		****************************************
 Step 49 / 50		****************************************
 Step 50 / 50		****************************************
-   Error:	Could not find file "output/stepping_stone_n_PPSK4_177_4.out"
-   Error:	Problem processing line 201 in file "ss_n_PPSK4_177_4tips.Rev"
+   Error:	Could not find file "output/stepping_stone_n_JIZ5_160_4.out"
+   Error:	Problem processing line 200 in file "ss_n_JIZ5_160_4tips.Rev"
