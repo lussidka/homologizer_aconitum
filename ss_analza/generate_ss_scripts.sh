@@ -141,6 +141,18 @@ while IFS=';,' read -r SAMPLE_ID RPB2_COUNT EIF3E_COUNT PHASE_COUNT MAX_COPIES r
 
     MAX_REAL=$(( RPB2_COUNT > EIF3E_COUNT ? RPB2_COUNT : EIF3E_COUNT ))
 
+    # 1. Detekce anomálie / chyby v datech (nalezeno víc kopií než je MAX_COPIES)
+    if [ "$MAX_REAL" -gt "$MAX_COPIES" ]; then
+        echo "❌ CHYBA u vzorku '$SAMPLE_ID': nalezeno $MAX_REAL reálných kopií, ale MAX_COPIES v tabulce je jen $MAX_COPIES!"
+        continue
+    fi
+
+    # 2. Přeskočení vzorků s pouze jednou variantou ploidie (není co porovnávat)
+    if [ "$MAX_REAL" -eq "$MAX_COPIES" ]; then
+        echo "⏭️ Přeskakuji vzorek '$SAMPLE_ID': má fixní ploidii $MAX_REAL (MAX_REAL == MAX_COPIES), není s čím porovnávat."
+        continue
+    fi
+
     for (( TESTED_PLOIDY=MAX_REAL; TESTED_PLOIDY<=MAX_COPIES; TESTED_PLOIDY++ )); do
         
         OUTPUT_FILE_PATH="${OUTPUT_DIR}/ss_${SAMPLE_ID}_${TESTED_PLOIDY}tips.Rev"
