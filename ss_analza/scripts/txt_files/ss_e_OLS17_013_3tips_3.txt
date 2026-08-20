@@ -61,6 +61,6 @@ Step 47 / 50		****************************************
 Step 48 / 50		****************************************
 Step 49 / 50		****************************************
 Step 50 / 50		****************************************
-0
+-8325.474
    Error:	Could not read file named "stepping_stone_e_OLS17_013_3.trees" in directory named "output" because the file does not exist
    Error:	Problem processing line 191 in file "ss_e_OLS17_013_3tips.Rev"

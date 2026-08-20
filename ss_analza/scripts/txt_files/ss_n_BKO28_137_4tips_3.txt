@@ -1,4 +1,0 @@
-   Successfully read one character matrix from file 'nexus_files_samples/RPB2_n_BKO28_137.nex'
-   Successfully read one character matrix from file 'nexus_files_samples/EIF3E_n_BKO28_137.nex'
-   Error:	Cannot find taxon 'n_BKO28_137_copy2' in the CharacterData matrix.
-   Error:	Problem processing line 36 in file "ss_n_BKO28_137_4tips.Rev"
