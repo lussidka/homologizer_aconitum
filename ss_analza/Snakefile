@@ -18,6 +18,11 @@ def load_target_samples():
             eif3e = int((row.get("Eif3E") or "0").strip())
             max_copies = int((row.get("polyploidie") or "0").strip())
             max_real = max(rpb2, eif3e)
+
+            # Stejné filtrování jako v bash skriptu:
+            if max_real >= max_copies:
+                continue
+
             ploidies = list(range(max_real, max_copies + 1))
             rows.append((sample, ploidies))
     return rows
