@@ -1,0 +1,3 @@
+   Successfully read one character matrix from file 'nexus_files_samples/RPB2_n_BLS8_090.nex'
+   Error:	Could not find file or path with name "nexus_files_samples/EIF3E_n_BLS8_090.nex"
+   Error:	Problem processing line 18 in file "ss_n_BLS8_090_3tips.Rev"
