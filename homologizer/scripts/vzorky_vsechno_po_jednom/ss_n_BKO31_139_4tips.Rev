@@ -1,0 +1,197 @@
+#
+# Specifies a homologizer model that jointly infer the phase and phylogeny.
+# Run an MCMC analysis by default. Set bayes_factors = TRUE to calculate
+# the marginal likelihood with a stepping stone analysis.
+#
+# Will Freyman
+#
+bayes_factors = FALSE
+output_file = "output/vsechno_po_jednom_n_BKO31_139_4"
+
+# input sequence alignments
+alignments = ["nexus_files_samples/RPB2_n_BKO31_139.nex",
+              "nexus_files_samples/EIF3E_n_BKO31_139.nex"]
+num_loci = alignments.size()
+
+for (i in 1:num_loci) {
+    data[i] = readDiscreteCharacterData(alignments[i])
+}
+
+# --- MISSING TAXA FOR CORE SAMPLES ---
+data[1].addMissingTaxa("n_VJJS2_011_BLANK1")
+data[1].addMissingTaxa("deg_UMA2_112_BLANK1")
+
+# --- MISSING TAXA FOR TARGET SAMPLE ---
+data[1].addMissingTaxa("n_BKO31_139_BLANK1")
+data[1].addMissingTaxa("n_BKO31_139_BLANK2")
+data[1].addMissingTaxa("n_BKO31_139_BLANK3")
+data[2].addMissingTaxa("n_BKO31_139_BLANK1")
+data[2].addMissingTaxa("n_BKO31_139_BLANK2")
+
+# --- INITIAL PHASE SETUP ---
+# Locus 1 Setup (RPB2)
+    # deg_UMA2_112 (Locus 1)
+    data[1].setHomeologPhase("deg_UMA2_112_copy1", "deg_UMA2_112_A")
+    data[1].setHomeologPhase("deg_UMA2_112_BLANK1", "deg_UMA2_112_B")
+    # Dynamic Target Sample Block (Locus 1)
+    data[1].setHomeologPhase("n_BKO31_139_copy1", "n_BKO31_139_A")
+    data[1].setHomeologPhase("n_BKO31_139_BLANK1", "n_BKO31_139_B")
+    data[1].setHomeologPhase("n_BKO31_139_BLANK2", "n_BKO31_139_C")
+    data[1].setHomeologPhase("n_BKO31_139_BLANK3", "n_BKO31_139_D")
+
+# Locus 2 Setup (EIF3E)
+    # deg_UMA2_112 (Locus 2)
+    data[2].setHomeologPhase("deg_UMA2_112_copy1", "deg_UMA2_112_A")
+    data[2].setHomeologPhase("deg_UMA2_112_copy2", "deg_UMA2_112_B")
+    # Dynamic Target Sample Block (Locus 2)
+    data[2].setHomeologPhase("n_BKO31_139_copy1", "n_BKO31_139_A")
+    data[2].setHomeologPhase("n_BKO31_139_copy2", "n_BKO31_139_B")
+    data[2].setHomeologPhase("n_BKO31_139_BLANK1", "n_BKO31_139_C")
+    data[2].setHomeologPhase("n_BKO31_139_BLANK2", "n_BKO31_139_D")
+
+
+# Fixní Core vzorky - Lokus 1
+for (i in 1:1) {
+    # n_VJJS2_011 (FIXED)
+    data[i].setHomeologPhase("n_VJJS2_011_BLANK1", "n_VJJS2_011_A")
+    data[i].setHomeologPhase("n_VJJS2_011_copy2", "n_VJJS2_011_B")
+    data[i].setHomeologPhase("n_VJJS2_011_copy1", "n_VJJS2_011_C")
+}
+
+# Fixní Core vzorky - Lokus 2
+for (i in 2:2) {
+    # n_VJJS2_011 (FIXED)
+    data[i].setHomeologPhase("n_VJJS2_011_copy3", "n_VJJS2_011_A")
+    data[i].setHomeologPhase("n_VJJS2_011_copy2", "n_VJJS2_011_B")
+    data[i].setHomeologPhase("n_VJJS2_011_copy1", "n_VJJS2_011_C")
+}
+
+# PŘESUNOUT? - add missing taxa 
+for (i in 1:num_loci) {
+    for (j in 1:num_loci) {
+        data[i].addMissingTaxa(data[j].taxa())
+    }
+}
+
+num_tips = data[1].ntaxa()
+n_branches = 2 * num_tips - 3
+
+mvi = 0
+for (i in 1:n_branches) {
+    branch_lengths[i] ~ dnExponential(100)
+    moves[++mvi] = mvScale(branch_lengths[i], weight=1.0)
+}
+
+topology ~ dnUniformTopology(data[1].taxa())
+moves[++mvi] = mvNNI(topology, weight=40.0)
+moves[++mvi] = mvSPR(topology, weight=40.0)
+
+tree := treeAssembly(topology, branch_lengths)
+
+# --- SUBSTITUTION MODELS ---
+# RPB2 (GTR + G)
+for (i in 1:1) {
+    er_prior <- v(1,1,1,1,1,1)
+    er[i] ~ dnDirichlet(er_prior)
+    er[i].setValue(simplex(v(1,1,1,1,1,1)))
+    moves[++mvi] = mvSimplexElementScale(er[i], weight=5)
+
+    pi_prior <- v(1,1,1,1)
+    pi[i] ~ dnDirichlet(pi_prior)
+    pi[i].setValue(simplex(v(1,1,1,1)))
+    moves[++mvi] = mvSimplexElementScale(pi[i], weight=5)
+    Q[i] := fnGTR(er[i], pi[i])
+
+    alpha ~ dnUniform( 0.0, 10 )
+    sr := fnDiscretizeGamma( alpha, alpha, 4 )
+    moves.append( mvScale(alpha, weight=2.0) )
+
+    if (i == 1) {
+        rate_multiplier[i] <- 1.0
+    } else {
+        rate_multiplier[i] ~ dnExponential(1)
+        moves[++mvi] = mvScale(rate_multiplier[i], weight=5)
+    }
+}
+for (i in 1:1) {
+    ctmc[i] ~ dnPhyloCTMC(tree=tree, Q=Q[i], siteRates=sr, branchRates=rate_multiplier[i], type="DNA")
+}
+
+# EIF3E (HKY + G)
+for (i in 2:2) {
+    kappa ~ dnLognormal(0.0, 1.0)
+    moves.append( mvScale(kappa) )
+
+    pi_prior <- v(1,1,1,1)
+    pi[i] ~ dnDirichlet(pi_prior)
+    pi[i].setValue(simplex(v(1,1,1,1)))
+    moves[++mvi] = mvSimplexElementScale(pi[i], weight=5)
+    Q[i] := fnHKY(kappa, pi[i])
+
+    alpha ~ dnUniform( 0.0, 10 )
+    sr := fnDiscretizeGamma( alpha, alpha, 4 )
+    moves.append( mvScale(alpha, weight=2.0) )
+
+    if (i == 1) {
+        rate_multiplier[i] <- 1.0
+    } else {
+        rate_multiplier[i] ~ dnExponential(1)
+        moves[++mvi] = mvScale(rate_multiplier[i], weight=5)
+    }
+}
+for (i in 2:2) {
+    ctmc[i] ~ dnPhyloCTMC(tree=tree, Q=Q[i], siteRates=sr, branchRates=rate_multiplier[i], type="DNA")
+}
+
+# --- PHASING PROPOSALS (MOVES) ---
+for (i in 1:num_loci) {
+    # Core Samples Moves
+    moves[++mvi] = mvHomeologPhase(ctmc[i], "deg_UMA2_112_A", "deg_UMA2_112_B", weight=2)
+    # Dynamic Moves for Target Sample
+    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BKO31_139_A", "n_BKO31_139_B", weight=2)
+    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BKO31_139_A", "n_BKO31_139_C", weight=2)
+    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BKO31_139_A", "n_BKO31_139_D", weight=2)
+    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BKO31_139_B", "n_BKO31_139_C", weight=2)
+    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BKO31_139_B", "n_BKO31_139_D", weight=2)
+    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BKO31_139_C", "n_BKO31_139_D", weight=2)
+}
+
+for (i in 1:num_loci) {
+    ctmc[i].clamp(data[i])
+}
+mymodel = model(Q)
+
+# --- MONITORS & RUN ---
+mni = 0
+monitors[++mni] = mnModel(filename=output_file + ".log", printgen=1)
+monitors[++mni] = mnFile(filename=output_file + ".trees", printgen=1, tree)
+monitors[++mni] = mnScreen(printgen=1)
+
+for (i in 1:num_loci){
+    monitors[++mni] = mnHomeologPhase(filename=output_file + "_locus_" + i + "_phase.log", printgen=1, ctmc[i])
+}
+
+if (bayes_factors) {
+
+    # running stepping stone analysis
+    pow_p = powerPosterior(mymodel, moves, monitors, output_file + ".out", cats=50, sampleFreq=1) 
+    pow_p.burnin(generations=200, tuningInterval=50)
+    pow_p.run(generations=1000)  
+    ss = steppingStoneSampler(file=output_file + ".out", powerColumnName="power", likelihoodColumnName="likelihood")
+
+    # print the marginal likelihood to screen
+    print(ss.marginal())
+
+} else {
+
+    # run MCMC 
+    mymcmc = mcmc(mymodel, monitors, moves)
+    mymcmc.run(generations=2000)
+
+    # summarize results
+    treetrace = readTreeTrace(output_file + ".trees", treetype="non-clock", burnin=0.25) 
+    map_tree = mapTree(treetrace, output_file + "_map.tree")
+    mcc_tree = mccTree(treetrace, output_file + "_mcc.tree")
+}
+
+

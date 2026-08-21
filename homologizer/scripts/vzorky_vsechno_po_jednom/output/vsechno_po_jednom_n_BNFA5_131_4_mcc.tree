@@ -1,0 +1,24 @@
+#NEXUS
+
+	Begin taxa;
+	Dimensions ntax=13;
+	Taxlabels
+		deg_UMA2_112_A
+		deg_UMA2_112_B
+		lyc_HHA1_072_copy1
+		n_BHA6_068_copy1
+		n_BNFA5_131_A
+		n_BNFA5_131_B
+		n_BNFA5_131_C
+		n_BNFA5_131_D
+		n_DSO2_114_copy1
+		n_VJJS2_011_A
+		n_VJJS2_011_B
+		n_VJJS2_011_C
+		var_BOB2_057_copy1
+		;
+End;
+
+Begin trees;
+tree TREE1 = [&U]((((((n_BHA6_068_copy1[&index=4]:0.000291[&brlen_95%_HPD={1e-06,0.000937}],n_BNFA5_131_C[&index=12]:0.001305[&brlen_95%_HPD={0.000178,0.002745}])[&index=14]:0.000833[&posterior=0.882079,brlen_95%_HPD={5.9e-05,0.001768}],n_BNFA5_131_D[&index=13]:0.000899[&brlen_95%_HPD={4e-05,0.002127}])[&index=15]:0.000447[&posterior=0.464357,brlen_95%_HPD={3e-06,0.001051}],n_VJJS2_011_B[&index=2]:0.001423[&brlen_95%_HPD={0.000475,0.002367}])[&index=16]:0.000811[&posterior=0.956696,brlen_95%_HPD={0.000144,0.001596}],var_BOB2_057_copy1[&index=6]:0.001822[&brlen_95%_HPD={0.000889,0.003005}])[&index=17]:0.000938[&posterior=0.947368,brlen_95%_HPD={7.4e-05,0.001881}],(((n_BNFA5_131_B[&index=11]:0.000826[&brlen_95%_HPD={0.000226,0.00158}],n_VJJS2_011_C[&index=1]:0.002047[&brlen_95%_HPD={0.000968,0.00325}])[&index=18]:0.000493[&posterior=0.695536,brlen_95%_HPD={3.2e-05,0.001129}],(n_DSO2_114_copy1[&index=5]:0.000261[&brlen_95%_HPD={9e-06,0.000784}],n_VJJS2_011_A[&index=9]:0.000395[&brlen_95%_HPD={8e-06,0.001218}])[&index=19]:0.001925[&posterior=0.998668,brlen_95%_HPD={0.000627,0.003095}])[&index=20]:0.009948[&posterior=0.986676,brlen_95%_HPD={0.002816,0.013854}],(lyc_HHA1_072_copy1[&index=3]:0.026680[&brlen_95%_HPD={0.001736,0.045552}],n_BNFA5_131_A[&index=8]:0.011554[&brlen_95%_HPD={8.5e-05,0.030902}])[&index=21]:0.020329[&posterior=0.764157,brlen_95%_HPD={0.00363,0.042895}])[&index=22]:0.008399[&posterior=0.922718,brlen_95%_HPD={0.003367,0.011746}])[&index=23]:0.003025[&posterior=0.988674,brlen_95%_HPD={0.001445,0.004944}],deg_UMA2_112_A[&index=7]:0.002141[&brlen_95%_HPD={0.000567,0.004102}],deg_UMA2_112_B[&index=10]:0.001866[&brlen_95%_HPD={0.000225,0.003763}])[&index=24]:0.000000[&posterior=1.000000];
+End;

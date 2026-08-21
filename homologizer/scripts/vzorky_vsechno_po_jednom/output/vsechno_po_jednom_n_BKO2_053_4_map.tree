@@ -1,0 +1,24 @@
+#NEXUS
+
+	Begin taxa;
+	Dimensions ntax=13;
+	Taxlabels
+		deg_UMA2_112_A
+		deg_UMA2_112_B
+		lyc_HHA1_072_copy1
+		n_BHA6_068_copy1
+		n_BKO2_053_A
+		n_BKO2_053_B
+		n_BKO2_053_C
+		n_BKO2_053_D
+		n_DSO2_114_copy1
+		n_VJJS2_011_A
+		n_VJJS2_011_B
+		n_VJJS2_011_C
+		var_BOB2_057_copy1
+		;
+End;
+
+Begin trees;
+tree TREE1 = [&U]((((((n_DSO2_114_copy1[&index=5]:0.000250[&brlen_95%_HPD={1.4e-05,0.000756}],n_VJJS2_011_A[&index=9]:0.000379[&brlen_95%_HPD={1e-06,0.001091}])[&index=14]:0.000418[&posterior=0.606929,brlen_95%_HPD={7e-06,0.001106}],n_BKO2_053_A[&index=8]:0.002496[&brlen_95%_HPD={3.5e-05,0.012301}])[&index=15]:0.001953[&posterior=0.559627,brlen_95%_HPD={0.00085,0.003647}],n_VJJS2_011_C[&index=1]:0.001927[&brlen_95%_HPD={0.000734,0.003037}])[&index=16]:0.008636[&posterior=0.538308,brlen_95%_HPD={0.002239,0.012787}],((lyc_HHA1_072_copy1[&index=3]:0.022508[&brlen_95%_HPD={0.000524,0.046111}],n_BKO2_053_C[&index=12]:0.003889[&brlen_95%_HPD={1.9e-05,0.01743}])[&index=17]:0.016693[&posterior=0.193871,brlen_95%_HPD={0.00096,0.036296}],n_BKO2_053_B[&index=11]:0.009691[&brlen_95%_HPD={0.000615,0.026013}])[&index=18]:0.016713[&posterior=0.256496,brlen_95%_HPD={0.00063,0.035998}])[&index=19]:0.007934[&posterior=0.726849,brlen_95%_HPD={0.001047,0.011791}],(((n_BHA6_068_copy1[&index=4]:0.001052[&brlen_95%_HPD={0.000243,0.001931}],n_VJJS2_011_B[&index=2]:0.001426[&brlen_95%_HPD={0.0004,0.002447}])[&index=20]:0.000206[&posterior=0.306462,brlen_95%_HPD={6e-06,0.000662}],n_BKO2_053_D[&index=13]:0.000748[&brlen_95%_HPD={4e-05,0.001494}])[&index=21]:0.000780[&posterior=0.834111,brlen_95%_HPD={0.000185,0.001382}],var_BOB2_057_copy1[&index=6]:0.001886[&brlen_95%_HPD={0.000892,0.003127}])[&index=22]:0.000930[&posterior=0.810127,brlen_95%_HPD={0.000138,0.001776}])[&index=23]:0.002875[&posterior=0.948035,brlen_95%_HPD={0.001024,0.004713}],deg_UMA2_112_A[&index=7]:0.002049[&brlen_95%_HPD={0.000626,0.003889}],deg_UMA2_112_B[&index=10]:0.002027[&brlen_95%_HPD={0.000318,0.00368}])[&index=24]:0.000000[&posterior=1.000000];
+End;

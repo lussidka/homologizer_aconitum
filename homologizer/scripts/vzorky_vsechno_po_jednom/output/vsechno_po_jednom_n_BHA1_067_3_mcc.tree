@@ -1,0 +1,23 @@
+#NEXUS
+
+	Begin taxa;
+	Dimensions ntax=12;
+	Taxlabels
+		deg_UMA2_112_A
+		deg_UMA2_112_B
+		lyc_HHA1_072_copy1
+		n_BHA1_067_A
+		n_BHA1_067_B
+		n_BHA1_067_C
+		n_BHA6_068_copy1
+		n_DSO2_114_copy1
+		n_VJJS2_011_A
+		n_VJJS2_011_B
+		n_VJJS2_011_C
+		var_BOB2_057_copy1
+		;
+End;
+
+Begin trees;
+tree TREE1 = [&U]((((((n_BHA1_067_A[&index=8]:0.004208[&brlen_95%_HPD={0.000133,0.01713}],n_VJJS2_011_C[&index=1]:0.001902[&brlen_95%_HPD={0.000721,0.003128}])[&index=13]:0.000434[&posterior=0.293138,brlen_95%_HPD={4.9e-05,0.001047}],(n_DSO2_114_copy1[&index=5]:0.000289[&brlen_95%_HPD={7e-06,0.000798}],n_VJJS2_011_A[&index=9]:0.000359[&brlen_95%_HPD={1.8e-05,0.000918}])[&index=14]:0.001859[&posterior=0.992672,brlen_95%_HPD={0.000621,0.003382}])[&index=15]:0.009049[&posterior=0.526982,brlen_95%_HPD={0.001642,0.014334}],lyc_HHA1_072_copy1[&index=3]:0.040050[&brlen_95%_HPD={0.027116,0.051271}])[&index=16]:0.007269[&posterior=0.299800,brlen_95%_HPD={0.000876,0.010839}],n_BHA1_067_C[&index=12]:0.004474[&brlen_95%_HPD={0.000145,0.020514}])[&index=17]:0.007186[&posterior=0.379747,brlen_95%_HPD={0.001165,0.011427}],(((n_BHA1_067_B[&index=11]:0.002704[&brlen_95%_HPD={6.6e-05,0.01036}],n_VJJS2_011_B[&index=2]:0.001282[&brlen_95%_HPD={0.000321,0.002317}])[&index=18]:0.000373[&posterior=0.499001,brlen_95%_HPD={1.3e-05,0.000976}],n_BHA6_068_copy1[&index=4]:0.001026[&brlen_95%_HPD={0.000202,0.001973}])[&index=19]:0.000704[&posterior=0.485010,brlen_95%_HPD={6.2e-05,0.001533}],var_BOB2_057_copy1[&index=6]:0.001916[&brlen_95%_HPD={0.000731,0.003212}])[&index=20]:0.000772[&posterior=0.451033,brlen_95%_HPD={0.00013,0.001606}])[&index=21]:0.003026[&posterior=0.926049,brlen_95%_HPD={0.000995,0.004928}],deg_UMA2_112_A[&index=7]:0.001884[&brlen_95%_HPD={0.000314,0.003785}],deg_UMA2_112_B[&index=10]:0.002031[&brlen_95%_HPD={0.00037,0.004076}])[&index=22]:0.000000[&posterior=1.000000];
+End;

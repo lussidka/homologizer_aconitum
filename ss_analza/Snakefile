@@ -29,8 +29,7 @@ def load_target_samples():
 
 
 TARGET_SAMPLE_PLOIDIES = load_target_samples()
-TARGETS = [(sample, ploidy) for sample, ploidies in TARGET_SAMPLE_PLOIDIES for ploidy in ploidies]
-REPLICATES = [1, 2, 3, 4, 5]  # Počet replikátů pro každý vzorek a ploidii
+TARGETS = [(sample, ploidy) for sample, ploidies in 
 
 # ------------------------------------------------------------------------------
 # 1. CÍL PIPELINE
@@ -49,7 +48,8 @@ rule prepare_inputs:
         core_csv="scripts/data/core_samples.csv",
         target_csv="scripts/data/target_samples.csv",
         eif3e_nexus="scripts/data/EIF3E_test.nex",
-        rpb2_nexus="scripts/data/RPB2_test.nex",
+        rpb2_nexus="scripts/data/RPB2_test.nex",TARGET_SAMPLE_PLOIDIES for ploidy in ploidies]
+REPLICATES = [1, 2, 3, 4, 5]  # Počet replikátů pro každý vzorek a ploidii
     output:
         # Dynamicky naplánováno, že se vytvoří tyto RevBayes skripty
         revs=[f"scripts/ss_{sample}_{ploidy}tips.Rev" for sample, ploidy in TARGETS],

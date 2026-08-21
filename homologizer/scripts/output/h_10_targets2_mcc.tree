@@ -1,0 +1,54 @@
+#NEXUS
+
+	Begin taxa;
+	Dimensions ntax=43;
+	Taxlabels
+		deg_UMA2_112_A
+		deg_UMA2_112_B
+		lyc_HHA1_072_copy1
+		n_BDJKH2_105_A
+		n_BDJKH2_105_B
+		n_BDJKH2_105_C
+		n_BDJKH5_166_A
+		n_BDJKH5_166_B
+		n_BDJKH8_106_A
+		n_BDJKH8_106_B
+		n_BDJKH8_106_C
+		n_BDJKH8_106_D
+		n_BDZKH2_023_A
+		n_BDZKH2_023_B
+		n_BDZKH5_128_A
+		n_BDZKH5_128_B
+		n_BDZKH5_128_C
+		n_BDZKH5_128_D
+		n_BDZKH8_024_A
+		n_BDZKH8_024_B
+		n_BDZKH8_024_C
+		n_BHA1_067_A
+		n_BHA1_067_B
+		n_BHA1_067_C
+		n_BHA1_067_D
+		n_BHA6_068_copy1
+		n_BHD3_145_A
+		n_BHD3_145_B
+		n_BHD3_145_C
+		n_BHD3_145_D
+		n_BKO22_138_A
+		n_BKO22_138_B
+		n_BKO22_138_C
+		n_BKO22_138_D
+		n_BKO2_053_A
+		n_BKO2_053_B
+		n_BKO2_053_C
+		n_BKO2_053_D
+		n_DSO2_114_copy1
+		n_VJJS2_011_A
+		n_VJJS2_011_B
+		n_VJJS2_011_C
+		var_BOB2_057_copy1
+		;
+End;
+
+Begin trees;
+tree TREE1 = [&U](((((((((((((((((n_BDZKH5_128_D[&index=32]:0.000405[&brlen_95%_HPD={1.6e-05,0.00121}],n_VJJS2_011_A[&index=23]:0.000515[&brlen_95%_HPD={1e-05,0.001426}])[&index=44]:0.000390[&posterior=0.170553,brlen_95%_HPD={7e-06,0.000968}],n_DSO2_114_copy1[&index=5]:0.000407[&brlen_95%_HPD={6e-06,0.001059}])[&index=45]:0.000340[&posterior=0.064624,brlen_95%_HPD={3e-05,0.000954}],n_BDJKH2_105_A[&index=8]:0.006234[&brlen_95%_HPD={0.000111,0.023012}])[&index=46]:0.000454[&posterior=0.080613,brlen_95%_HPD={7e-06,0.001082}],n_BKO22_138_D[&index=43]:0.002149[&brlen_95%_HPD={3.1e-05,0.004401}])[&index=47]:0.000671[&posterior=0.271153,brlen_95%_HPD={8.6e-05,0.00172}],n_BKO2_053_C[&index=40]:0.004373[&brlen_95%_HPD={3e-06,0.017749}])[&index=48]:0.001096[&posterior=0.251166,brlen_95%_HPD={0.000221,0.002302}],n_BDZKH8_024_C[&index=33]:0.000434[&brlen_95%_HPD={1.3e-05,0.00102}])[&index=49]:0.000242[&posterior=0.095936,brlen_95%_HPD={2.8e-05,0.000643}],n_BDZKH2_023_A[&index=11]:0.000210[&brlen_95%_HPD={2e-06,0.000662}])[&index=50]:0.000988[&posterior=0.217855,brlen_95%_HPD={7.5e-05,0.001803}],n_BDZKH5_128_A[&index=13]:0.000325[&brlen_95%_HPD={1e-06,0.001019}])[&index=51]:0.000413[&posterior=0.164557,brlen_95%_HPD={7.4e-05,0.000903}],n_BDJKH5_166_A[&index=9]:0.000204[&brlen_95%_HPD={4e-06,0.000631}])[&index=52]:0.000396[&posterior=0.173884,brlen_95%_HPD={2.9e-05,0.000841}],(n_BHA1_067_C[&index=35]:0.006439[&brlen_95%_HPD={8e-06,0.024175}],n_BHD3_145_A[&index=18]:0.003181[&brlen_95%_HPD={8.9e-05,0.014468}])[&index=53]:0.006121[&posterior=0.029314,brlen_95%_HPD={5e-05,0.017836}])[&index=54]:0.000518[&posterior=0.019320,brlen_95%_HPD={9e-06,0.001179}],(n_BDJKH2_105_B[&index=25]:0.002393[&brlen_95%_HPD={0.00012,0.009166}],n_BDJKH8_106_C[&index=29]:0.000835[&brlen_95%_HPD={2.1e-05,0.001889}])[&index=55]:0.000690[&posterior=0.070620,brlen_95%_HPD={4.3e-05,0.001278}])[&index=56]:0.000545[&posterior=0.033977,brlen_95%_HPD={1.6e-05,0.001039}],n_VJJS2_011_C[&index=1]:0.002159[&brlen_95%_HPD={0.000728,0.003686}])[&index=57]:0.006155[&posterior=0.048634,brlen_95%_HPD={0.002208,0.010838}],(n_BKO22_138_B[&index=22]:0.006567[&brlen_95%_HPD={0.000162,0.021455}],n_BKO2_053_D[&index=41]:0.002692[&brlen_95%_HPD={1.5e-05,0.015921}])[&index=58]:0.005068[&posterior=0.011992,brlen_95%_HPD={0.000274,0.01374}])[&index=59]:0.007665[&posterior=0.007328,brlen_95%_HPD={0.00337,0.008267}],((((((n_BDJKH2_105_C[&index=26]:0.005248[&brlen_95%_HPD={4.7e-05,0.024655}],n_BDJKH8_106_D[&index=30]:0.010369[&brlen_95%_HPD={0.000369,0.030283}])[&index=60]:0.009638[&posterior=0.021985,brlen_95%_HPD={0.000238,0.024323}],n_BKO2_053_B[&index=39]:0.011392[&brlen_95%_HPD={9.3e-05,0.033569}])[&index=61]:0.000594[&posterior=0.001999,brlen_95%_HPD={0.000761,0.000761}],(n_BDZKH8_024_B[&index=16]:0.008681[&brlen_95%_HPD={5e-05,0.029723}],n_BHA1_067_D[&index=36]:0.003344[&brlen_95%_HPD={9.3e-05,0.015521}])[&index=62]:0.006064[&posterior=0.011992,brlen_95%_HPD={0.000506,0.027948}])[&index=63]:0.011915[&posterior=0.001999,brlen_95%_HPD={0.0142,0.014318}],n_BHD3_145_C[&index=37]:0.016262[&brlen_95%_HPD={0.000782,0.044552}])[&index=64]:0.001753[&posterior=0.001332,brlen_95%_HPD={0.001793,0.001793}],((n_BDJKH8_106_B[&index=28]:0.010180[&brlen_95%_HPD={0.000543,0.028709}],n_BKO22_138_C[&index=42]:0.010216[&brlen_95%_HPD={6.4e-05,0.030136}])[&index=65]:0.007571[&posterior=0.037975,brlen_95%_HPD={3.2e-05,0.018482}],lyc_HHA1_072_copy1[&index=3]:0.018261[&brlen_95%_HPD={0.000948,0.046569}])[&index=66]:0.007163[&posterior=0.007328,brlen_95%_HPD={0.000806,0.00798}])[&index=67]:0.010179[&posterior=0.001332,brlen_95%_HPD={0.019596,0.019596}],(n_BHA1_067_B[&index=34]:0.009008[&brlen_95%_HPD={0.000467,0.027178}],n_BHD3_145_D[&index=38]:0.004395[&brlen_95%_HPD={2.5e-05,0.019943}])[&index=68]:0.004760[&posterior=0.005330,brlen_95%_HPD={0.000173,0.00901}])[&index=69]:0.011305[&posterior=0.002665,brlen_95%_HPD={0.011608,0.011608}])[&index=70]:0.007512[&posterior=0.038641,brlen_95%_HPD={0.001788,0.011846}],(((((((n_BDJKH5_166_B[&index=27]:0.000501[&brlen_95%_HPD={5e-06,0.001496}],n_BDJKH8_106_A[&index=10]:0.000335[&brlen_95%_HPD={1.4e-05,0.000954}])[&index=71]:0.001754[&posterior=0.913391,brlen_95%_HPD={1.7e-05,0.003412}],n_BDZKH5_128_B[&index=14]:0.000642[&brlen_95%_HPD={1.1e-05,0.001864}])[&index=72]:0.000537[&posterior=0.182545,brlen_95%_HPD={5e-06,0.0018}],n_BDZKH2_023_B[&index=12]:0.000223[&brlen_95%_HPD={5e-06,0.000651}])[&index=73]:0.000773[&posterior=0.536975,brlen_95%_HPD={5e-06,0.001724}],n_BDZKH8_024_A[&index=15]:0.002523[&brlen_95%_HPD={2.7e-05,0.014535}])[&index=74]:0.000713[&posterior=0.539640,brlen_95%_HPD={4.2e-05,0.001459}],((n_BDZKH5_128_C[&index=31]:0.001320[&brlen_95%_HPD={0.000181,0.00286}],n_BHA6_068_copy1[&index=4]:0.000571[&brlen_95%_HPD={1e-06,0.001637}])[&index=75]:0.000738[&posterior=0.552965,brlen_95%_HPD={5e-06,0.001693}],n_BHD3_145_B[&index=19]:0.001986[&brlen_95%_HPD={7.9e-05,0.008704}])[&index=76]:0.000527[&posterior=0.510326,brlen_95%_HPD={5.4e-05,0.001169}])[&index=77]:0.000239[&posterior=0.066622,brlen_95%_HPD={2.6e-05,0.000539}],((n_BHA1_067_A[&index=17]:0.002625[&brlen_95%_HPD={4.2e-05,0.013303}],n_VJJS2_011_B[&index=2]:0.001353[&brlen_95%_HPD={0.000233,0.002514}])[&index=78]:0.000526[&posterior=0.597602,brlen_95%_HPD={1.5e-05,0.001348}],n_BKO2_053_A[&index=20]:0.002520[&brlen_95%_HPD={0.000133,0.011318}])[&index=79]:0.000301[&posterior=0.102598,brlen_95%_HPD={5e-06,0.000832}])[&index=80]:0.000918[&posterior=0.139241,brlen_95%_HPD={8.2e-05,0.002035}],var_BOB2_057_copy1[&index=6]:0.002149[&brlen_95%_HPD={0.000157,0.00364}])[&index=81]:0.000781[&posterior=0.081279,brlen_95%_HPD={7.4e-05,0.001591}])[&index=82]:0.001275[&posterior=0.225849,brlen_95%_HPD={4.9e-05,0.002623}],n_BKO22_138_A[&index=21]:0.002597[&brlen_95%_HPD={4.7e-05,0.008024}])[&index=83]:0.002045[&posterior=0.531646,brlen_95%_HPD={1e-05,0.003804}],deg_UMA2_112_A[&index=7]:0.002401[&brlen_95%_HPD={6.5e-05,0.005245}],deg_UMA2_112_B[&index=24]:0.002088[&brlen_95%_HPD={0.000236,0.00407}])[&index=84]:0.000000[&posterior=1.000000];
+End;

@@ -1,0 +1,24 @@
+#NEXUS
+
+	Begin taxa;
+	Dimensions ntax=13;
+	Taxlabels
+		deg_UMA2_112_A
+		deg_UMA2_112_B
+		lyc_HHA1_072_copy1
+		n_BHA1_067_A
+		n_BHA1_067_B
+		n_BHA1_067_C
+		n_BHA1_067_D
+		n_BHA6_068_copy1
+		n_DSO2_114_copy1
+		n_VJJS2_011_A
+		n_VJJS2_011_B
+		n_VJJS2_011_C
+		var_BOB2_057_copy1
+		;
+End;
+
+Begin trees;
+tree TREE1 = [&U](((((((n_DSO2_114_copy1[&index=5]:0.000278[&brlen_95%_HPD={2.3e-05,0.000861}],n_VJJS2_011_A[&index=9]:0.000396[&brlen_95%_HPD={7e-06,0.001004}])[&index=14]:0.001907[&posterior=0.990007,brlen_95%_HPD={0.000481,0.003292}],n_BHA1_067_D[&index=13]:0.003760[&brlen_95%_HPD={0.000171,0.020505}])[&index=15]:0.000592[&posterior=0.281812,brlen_95%_HPD={5.6e-05,0.001368}],n_VJJS2_011_C[&index=1]:0.001911[&brlen_95%_HPD={0.000763,0.003114}])[&index=16]:0.008814[&posterior=0.607595,brlen_95%_HPD={0.001717,0.01382}],n_BHA1_067_B[&index=11]:0.008703[&brlen_95%_HPD={0.000321,0.03344}])[&index=17]:0.006529[&posterior=0.201865,brlen_95%_HPD={0.001607,0.0127}],(lyc_HHA1_072_copy1[&index=3]:0.025180[&brlen_95%_HPD={0.000855,0.043304}],n_BHA1_067_C[&index=12]:0.006038[&brlen_95%_HPD={0.000243,0.020475}])[&index=18]:0.018181[&posterior=0.331113,brlen_95%_HPD={0.000203,0.037372}])[&index=19]:0.007672[&posterior=0.557628,brlen_95%_HPD={0.001648,0.011722}],(((n_BHA1_067_A[&index=8]:0.002335[&brlen_95%_HPD={0.000203,0.01114}],n_VJJS2_011_B[&index=2]:0.001068[&brlen_95%_HPD={6e-06,0.002044}])[&index=20]:0.000505[&posterior=0.729514,brlen_95%_HPD={4.3e-05,0.001186}],n_BHA6_068_copy1[&index=4]:0.000920[&brlen_95%_HPD={0.000239,0.001714}])[&index=21]:0.000711[&posterior=0.657562,brlen_95%_HPD={9.7e-05,0.001402}],var_BOB2_057_copy1[&index=6]:0.001852[&brlen_95%_HPD={0.000615,0.003082}])[&index=22]:0.000816[&posterior=0.611592,brlen_95%_HPD={0.000168,0.001581}])[&index=23]:0.002792[&posterior=0.939374,brlen_95%_HPD={0.001,0.004732}],deg_UMA2_112_A[&index=7]:0.001942[&brlen_95%_HPD={0.000497,0.003815}],deg_UMA2_112_B[&index=10]:0.001929[&brlen_95%_HPD={0.000454,0.003454}])[&index=24]:0.000000[&posterior=1.000000];
+End;

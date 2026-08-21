@@ -6,11 +6,11 @@
 # Will Freyman
 #
 bayes_factors = FALSE
-output_file = "output/stepping_stone_n_BDJKH2_105_1"
+output_file = "output/vsechno_po_jednom_n_BKO22_138_4"
 
 # input sequence alignments
-alignments = ["nexus_files_samples/RPB2_n_BDJKH2_105.nex",
-              "nexus_files_samples/EIF3E_n_BDJKH2_105.nex"]
+alignments = ["nexus_files_samples/RPB2_n_BKO22_138.nex",
+              "nexus_files_samples/EIF3E_n_BKO22_138.nex"]
 num_loci = alignments.size()
 
 for (i in 1:num_loci) {
@@ -22,19 +22,32 @@ data[1].addMissingTaxa("n_VJJS2_011_BLANK1")
 data[1].addMissingTaxa("deg_UMA2_112_BLANK1")
 
 # --- MISSING TAXA FOR TARGET SAMPLE ---
+data[1].addMissingTaxa("n_BKO22_138_BLANK1")
+data[1].addMissingTaxa("n_BKO22_138_BLANK2")
+data[2].addMissingTaxa("n_BKO22_138_BLANK1")
+data[2].addMissingTaxa("n_BKO22_138_BLANK2")
+data[2].addMissingTaxa("n_BKO22_138_BLANK3")
 
 # --- INITIAL PHASE SETUP ---
 # Locus 1 Setup (RPB2)
     # deg_UMA2_112 (Locus 1)
     data[1].setHomeologPhase("deg_UMA2_112_copy1", "deg_UMA2_112_A")
     data[1].setHomeologPhase("deg_UMA2_112_BLANK1", "deg_UMA2_112_B")
-
+    # Dynamic Target Sample Block (Locus 1)
+    data[1].setHomeologPhase("n_BKO22_138_copy1", "n_BKO22_138_A")
+    data[1].setHomeologPhase("n_BKO22_138_copy2", "n_BKO22_138_B")
+    data[1].setHomeologPhase("n_BKO22_138_BLANK1", "n_BKO22_138_C")
+    data[1].setHomeologPhase("n_BKO22_138_BLANK2", "n_BKO22_138_D")
 
 # Locus 2 Setup (EIF3E)
     # deg_UMA2_112 (Locus 2)
     data[2].setHomeologPhase("deg_UMA2_112_copy1", "deg_UMA2_112_A")
     data[2].setHomeologPhase("deg_UMA2_112_copy2", "deg_UMA2_112_B")
-
+    # Dynamic Target Sample Block (Locus 2)
+    data[2].setHomeologPhase("n_BKO22_138_copy1", "n_BKO22_138_A")
+    data[2].setHomeologPhase("n_BKO22_138_BLANK1", "n_BKO22_138_B")
+    data[2].setHomeologPhase("n_BKO22_138_BLANK2", "n_BKO22_138_C")
+    data[2].setHomeologPhase("n_BKO22_138_BLANK3", "n_BKO22_138_D")
 
 
 # Fixní Core vzorky - Lokus 1
@@ -135,7 +148,12 @@ for (i in 1:num_loci) {
     # Core Samples Moves
     moves[++mvi] = mvHomeologPhase(ctmc[i], "deg_UMA2_112_A", "deg_UMA2_112_B", weight=2)
     # Dynamic Moves for Target Sample
-
+    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BKO22_138_A", "n_BKO22_138_B", weight=2)
+    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BKO22_138_A", "n_BKO22_138_C", weight=2)
+    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BKO22_138_A", "n_BKO22_138_D", weight=2)
+    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BKO22_138_B", "n_BKO22_138_C", weight=2)
+    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BKO22_138_B", "n_BKO22_138_D", weight=2)
+    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BKO22_138_C", "n_BKO22_138_D", weight=2)
 }
 
 for (i in 1:num_loci) {

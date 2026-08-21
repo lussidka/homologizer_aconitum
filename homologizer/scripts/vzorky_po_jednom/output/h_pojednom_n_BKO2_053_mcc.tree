@@ -1,0 +1,24 @@
+#NEXUS
+
+	Begin taxa;
+	Dimensions ntax=13;
+	Taxlabels
+		deg_UMA2_112_A
+		deg_UMA2_112_B
+		lyc_HHA1_072_copy1
+		n_BHA6_068_copy1
+		n_BKO2_053_A
+		n_BKO2_053_B
+		n_BKO2_053_C
+		n_BKO2_053_D
+		n_DSO2_114_copy1
+		n_VJJS2_011_A
+		n_VJJS2_011_B
+		n_VJJS2_011_C
+		var_BOB2_057_copy1
+		;
+End;
+
+Begin trees;
+tree TREE1 = [&U](((((((n_DSO2_114_copy1[&index=5]:0.000200[&brlen_95%_HPD={0,0.000776}],n_VJJS2_011_A[&index=9]:0.000378[&brlen_95%_HPD={3e-06,0.001153}])[&index=14]:0.000461[&posterior=0.632245,brlen_95%_HPD={1e-05,0.00103}],n_BKO2_053_C[&index=12]:0.002132[&brlen_95%_HPD={2.3e-05,0.010239}])[&index=15]:0.001775[&posterior=0.684211,brlen_95%_HPD={0.000337,0.00315}],n_VJJS2_011_C[&index=1]:0.001975[&brlen_95%_HPD={0.000756,0.00319}])[&index=16]:0.009182[&posterior=0.599600,brlen_95%_HPD={0.000102,0.013114}],(lyc_HHA1_072_copy1[&index=3]:0.032138[&brlen_95%_HPD={0.0022,0.049093}],n_BKO2_053_D[&index=13]:0.011642[&brlen_95%_HPD={0.000155,0.031608}])[&index=17]:0.013891[&posterior=0.240506,brlen_95%_HPD={6e-06,0.035012}])[&index=18]:0.006386[&posterior=0.201865,brlen_95%_HPD={0.000381,0.011392}],n_BKO2_053_A[&index=8]:0.008695[&brlen_95%_HPD={6.6e-05,0.025842}])[&index=19]:0.006925[&posterior=0.560959,brlen_95%_HPD={3.6e-05,0.011206}],(((n_BHA6_068_copy1[&index=4]:0.001002[&brlen_95%_HPD={0.000235,0.00184}],n_VJJS2_011_B[&index=2]:0.001345[&brlen_95%_HPD={0.00041,0.002381}])[&index=20]:0.000255[&posterior=0.327781,brlen_95%_HPD={4e-06,0.000677}],n_BKO2_053_B[&index=11]:0.001032[&brlen_95%_HPD={0.000154,0.001837}])[&index=21]:0.000714[&posterior=0.874084,brlen_95%_HPD={0.000102,0.001428}],var_BOB2_057_copy1[&index=6]:0.001740[&brlen_95%_HPD={0.000682,0.003091}])[&index=22]:0.000832[&posterior=0.785476,brlen_95%_HPD={0.000103,0.001681}])[&index=23]:0.002770[&posterior=0.862092,brlen_95%_HPD={0.000709,0.0048}],deg_UMA2_112_A[&index=7]:0.002068[&brlen_95%_HPD={0.000452,0.003893}],deg_UMA2_112_B[&index=10]:0.001755[&brlen_95%_HPD={0.000183,0.003606}])[&index=24]:0.000000[&posterior=1.000000];
+End;

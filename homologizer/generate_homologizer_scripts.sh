@@ -374,7 +374,7 @@ if (bayes_factors) {
 
     # run MCMC 
     mymcmc = mcmc(mymodel, monitors, moves)
-    mymcmc.run(generations=2000)
+    mymcmc.run(generations=5000)
 
     # summarize results
     treetrace = readTreeTrace(output_file + ".trees", treetype="non-clock", burnin=0.25) 

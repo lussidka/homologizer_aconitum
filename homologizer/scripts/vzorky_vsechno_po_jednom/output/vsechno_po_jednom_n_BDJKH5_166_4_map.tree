@@ -1,0 +1,24 @@
+#NEXUS
+
+	Begin taxa;
+	Dimensions ntax=13;
+	Taxlabels
+		deg_UMA2_112_A
+		deg_UMA2_112_B
+		lyc_HHA1_072_copy1
+		n_BDJKH5_166_A
+		n_BDJKH5_166_B
+		n_BDJKH5_166_C
+		n_BDJKH5_166_D
+		n_BHA6_068_copy1
+		n_DSO2_114_copy1
+		n_VJJS2_011_A
+		n_VJJS2_011_B
+		n_VJJS2_011_C
+		var_BOB2_057_copy1
+		;
+End;
+
+Begin trees;
+tree TREE1 = [&U](((((n_BDJKH5_166_A[&index=8]:0.009546[&brlen_95%_HPD={0.000104,0.032727}],n_BDJKH5_166_B[&index=11]:0.003141[&brlen_95%_HPD={6.1e-05,0.01057}])[&index=14]:0.006542[&posterior=0.068621,brlen_95%_HPD={5.2e-05,0.015253}],lyc_HHA1_072_copy1[&index=3]:0.037133[&brlen_95%_HPD={0.011204,0.050609}])[&index=15]:0.007179[&posterior=0.051299,brlen_95%_HPD={2.8e-05,0.026016}],((n_BDJKH5_166_D[&index=13]:0.003280[&brlen_95%_HPD={0.000145,0.015692}],n_VJJS2_011_C[&index=1]:0.001948[&brlen_95%_HPD={0.000788,0.003344}])[&index=16]:0.000488[&posterior=0.288474,brlen_95%_HPD={2.6e-05,0.001204}],(n_DSO2_114_copy1[&index=5]:0.000315[&brlen_95%_HPD={9e-06,0.000885}],n_VJJS2_011_A[&index=9]:0.000391[&brlen_95%_HPD={6e-06,0.001077}])[&index=17]:0.001823[&posterior=0.976016,brlen_95%_HPD={0.000574,0.003135}])[&index=18]:0.009901[&posterior=0.375083,brlen_95%_HPD={0.001856,0.014491}])[&index=19]:0.007347[&posterior=0.149900,brlen_95%_HPD={0.00027,0.010437}],(((n_BDJKH5_166_C[&index=12]:0.004447[&brlen_95%_HPD={2.6e-05,0.017065}],n_BHA6_068_copy1[&index=4]:0.000888[&brlen_95%_HPD={0.000221,0.001581}])[&index=20]:0.000457[&posterior=0.131912,brlen_95%_HPD={9e-06,0.001302}],n_VJJS2_011_B[&index=2]:0.001385[&brlen_95%_HPD={0.000438,0.00257}])[&index=21]:0.000883[&posterior=0.259827,brlen_95%_HPD={0.00013,0.001776}],var_BOB2_057_copy1[&index=6]:0.001809[&brlen_95%_HPD={0.00031,0.003061}])[&index=22]:0.000981[&posterior=0.238508,brlen_95%_HPD={0.000206,0.00203}])[&index=23]:0.002761[&posterior=0.832778,brlen_95%_HPD={0.001043,0.004737}],deg_UMA2_112_A[&index=7]:0.001765[&brlen_95%_HPD={9.5e-05,0.00338}],deg_UMA2_112_B[&index=10]:0.001961[&brlen_95%_HPD={0.00055,0.003642}])[&index=24]:0.000000[&posterior=1.000000];
+End;

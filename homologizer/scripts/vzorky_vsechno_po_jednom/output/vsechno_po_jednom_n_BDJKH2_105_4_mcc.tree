@@ -1,0 +1,24 @@
+#NEXUS
+
+	Begin taxa;
+	Dimensions ntax=13;
+	Taxlabels
+		deg_UMA2_112_A
+		deg_UMA2_112_B
+		lyc_HHA1_072_copy1
+		n_BDJKH2_105_A
+		n_BDJKH2_105_B
+		n_BDJKH2_105_C
+		n_BDJKH2_105_D
+		n_BHA6_068_copy1
+		n_DSO2_114_copy1
+		n_VJJS2_011_A
+		n_VJJS2_011_B
+		n_VJJS2_011_C
+		var_BOB2_057_copy1
+		;
+End;
+
+Begin trees;
+tree TREE1 = [&U]((((((n_DSO2_114_copy1[&index=5]:0.000354[&brlen_95%_HPD={2.4e-05,0.001028}],n_VJJS2_011_A[&index=9]:0.000245[&brlen_95%_HPD={6e-06,0.000733}])[&index=14]:0.000395[&posterior=0.417055,brlen_95%_HPD={6e-06,0.000998}],n_BDJKH2_105_A[&index=8]:0.006651[&brlen_95%_HPD={0.000211,0.025572}])[&index=15]:0.001854[&posterior=0.337775,brlen_95%_HPD={0.000517,0.003415}],(n_BDJKH2_105_D[&index=13]:0.004404[&brlen_95%_HPD={0.00014,0.019365}],n_VJJS2_011_C[&index=1]:0.001767[&brlen_95%_HPD={0.000522,0.003319}])[&index=16]:0.000694[&posterior=0.184544,brlen_95%_HPD={2.3e-05,0.001642}])[&index=17]:0.009222[&posterior=0.324450,brlen_95%_HPD={0.003341,0.013766}],((lyc_HHA1_072_copy1[&index=3]:0.032446[&brlen_95%_HPD={0.000261,0.051384}],n_BDJKH2_105_C[&index=12]:0.005893[&brlen_95%_HPD={5.7e-05,0.021711}])[&index=18]:0.012884[&posterior=0.157229,brlen_95%_HPD={8.6e-05,0.03487}],n_BDJKH2_105_B[&index=11]:0.005794[&brlen_95%_HPD={0.000235,0.02223}])[&index=19]:0.016458[&posterior=0.208528,brlen_95%_HPD={0.001527,0.038751}])[&index=20]:0.007262[&posterior=0.614257,brlen_95%_HPD={0.000905,0.011002}],((n_BHA6_068_copy1[&index=4]:0.000986[&brlen_95%_HPD={0.000259,0.001902}],n_VJJS2_011_B[&index=2]:0.001391[&brlen_95%_HPD={0.000581,0.002571}])[&index=21]:0.000804[&posterior=0.954697,brlen_95%_HPD={0.000104,0.00154}],var_BOB2_057_copy1[&index=6]:0.001679[&brlen_95%_HPD={8.6e-05,0.002885}])[&index=22]:0.000899[&posterior=0.827448,brlen_95%_HPD={0.000243,0.001763}])[&index=23]:0.002775[&posterior=0.844770,brlen_95%_HPD={0.001159,0.004574}],deg_UMA2_112_A[&index=7]:0.001813[&brlen_95%_HPD={0.000292,0.003469}],deg_UMA2_112_B[&index=10]:0.001944[&brlen_95%_HPD={0.00031,0.003884}])[&index=24]:0.000000[&posterior=1.000000];
+End;

@@ -1,0 +1,24 @@
+#NEXUS
+
+	Begin taxa;
+	Dimensions ntax=13;
+	Taxlabels
+		deg_UMA2_112_A
+		deg_UMA2_112_B
+		lyc_HHA1_072_copy1
+		n_BHA6_068_copy1
+		n_BOJ2_050_A
+		n_BOJ2_050_B
+		n_BOJ2_050_C
+		n_BOJ2_050_D
+		n_DSO2_114_copy1
+		n_VJJS2_011_A
+		n_VJJS2_011_B
+		n_VJJS2_011_C
+		var_BOB2_057_copy1
+		;
+End;
+
+Begin trees;
+tree TREE1 = [&U]((((((n_DSO2_114_copy1[&index=5]:0.000595[&brlen_95%_HPD={2e-06,0.001505}],n_VJJS2_011_A[&index=10]:0.000381[&brlen_95%_HPD={3e-06,0.001042}])[&index=14]:0.000369[&posterior=0.506329,brlen_95%_HPD={1.1e-05,0.000958}],n_BOJ2_050_C[&index=12]:0.000750[&brlen_95%_HPD={5.6e-05,0.001687}])[&index=15]:0.001387[&posterior=0.724850,brlen_95%_HPD={0.000317,0.002847}],n_VJJS2_011_C[&index=1]:0.002103[&brlen_95%_HPD={0.000792,0.003432}])[&index=16]:0.010108[&posterior=0.695536,brlen_95%_HPD={0.006633,0.014735}],(lyc_HHA1_072_copy1[&index=3]:0.031492[&brlen_95%_HPD={0.00067,0.049488}],n_BOJ2_050_B[&index=9]:0.010744[&brlen_95%_HPD={9.4e-05,0.030377}])[&index=17]:0.024553[&posterior=0.467688,brlen_95%_HPD={0.00069,0.04695}])[&index=18]:0.007962[&posterior=0.655563,brlen_95%_HPD={0.003737,0.012129}],(((n_BHA6_068_copy1[&index=4]:0.000962[&brlen_95%_HPD={1.6e-05,0.001843}],n_BOJ2_050_A[&index=8]:0.001619[&brlen_95%_HPD={0.00021,0.004674}])[&index=19]:0.000385[&posterior=0.175883,brlen_95%_HPD={1.1e-05,0.000948}],(n_BOJ2_050_D[&index=13]:0.001145[&brlen_95%_HPD={0.000249,0.002246}],n_VJJS2_011_B[&index=2]:0.001134[&brlen_95%_HPD={0.000396,0.00212}])[&index=20]:0.000515[&posterior=0.347102,brlen_95%_HPD={6.8e-05,0.001158}])[&index=21]:0.000818[&posterior=0.727515,brlen_95%_HPD={0.000212,0.001648}],var_BOB2_057_copy1[&index=6]:0.001841[&brlen_95%_HPD={0.000796,0.002955}])[&index=22]:0.000983[&posterior=0.716855,brlen_95%_HPD={0.000192,0.001892}])[&index=23]:0.002793[&posterior=0.962692,brlen_95%_HPD={0.001258,0.004771}],deg_UMA2_112_A[&index=7]:0.002224[&brlen_95%_HPD={0.000672,0.004138}],deg_UMA2_112_B[&index=11]:0.001914[&brlen_95%_HPD={0.000437,0.003645}])[&index=24]:0.000000[&posterior=1.000000];
+End;

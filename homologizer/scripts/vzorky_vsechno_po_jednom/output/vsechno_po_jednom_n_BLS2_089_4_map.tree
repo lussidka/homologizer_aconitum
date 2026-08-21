@@ -1,0 +1,24 @@
+#NEXUS
+
+	Begin taxa;
+	Dimensions ntax=13;
+	Taxlabels
+		deg_UMA2_112_A
+		deg_UMA2_112_B
+		lyc_HHA1_072_copy1
+		n_BHA6_068_copy1
+		n_BLS2_089_A
+		n_BLS2_089_B
+		n_BLS2_089_C
+		n_BLS2_089_D
+		n_DSO2_114_copy1
+		n_VJJS2_011_A
+		n_VJJS2_011_B
+		n_VJJS2_011_C
+		var_BOB2_057_copy1
+		;
+End;
+
+Begin trees;
+tree TREE1 = [&U](((((((n_DSO2_114_copy1[&index=5]:0.000225[&brlen_95%_HPD={5e-06,0.000624}],n_VJJS2_011_A[&index=9]:0.000504[&brlen_95%_HPD={1.7e-05,0.001367}])[&index=14]:0.001208[&posterior=0.792139,brlen_95%_HPD={8e-06,0.002296}],n_BLS2_089_D[&index=13]:0.001680[&brlen_95%_HPD={1.1e-05,0.009552}])[&index=15]:0.001110[&posterior=0.487009,brlen_95%_HPD={6.2e-05,0.002113}],n_VJJS2_011_C[&index=1]:0.001818[&brlen_95%_HPD={0.000578,0.003133}])[&index=16]:0.009402[&posterior=0.413058,brlen_95%_HPD={0.000577,0.01452}],n_BLS2_089_B[&index=11]:0.011368[&brlen_95%_HPD={0.00055,0.033745}])[&index=17]:0.008918[&posterior=0.146569,brlen_95%_HPD={0.00061,0.014457}],(lyc_HHA1_072_copy1[&index=3]:0.028129[&brlen_95%_HPD={0.004249,0.049589}],n_BLS2_089_A[&index=8]:0.009316[&brlen_95%_HPD={7e-05,0.029777}])[&index=18]:0.018628[&posterior=0.209194,brlen_95%_HPD={1.4e-05,0.037767}])[&index=19]:0.006663[&posterior=0.155896,brlen_95%_HPD={0.000685,0.010632}],((n_BHA6_068_copy1[&index=4]:0.001006[&brlen_95%_HPD={0.000322,0.001867}],n_VJJS2_011_B[&index=2]:0.001452[&brlen_95%_HPD={0.000537,0.002667}])[&index=20]:0.000755[&posterior=0.927382,brlen_95%_HPD={0.00017,0.001502}],var_BOB2_057_copy1[&index=6]:0.001859[&brlen_95%_HPD={0.0007,0.00316}])[&index=21]:0.000821[&posterior=0.830113,brlen_95%_HPD={5.1e-05,0.001668}])[&index=22]:0.002672[&posterior=0.072618,brlen_95%_HPD={2.4e-05,0.005721}],(deg_UMA2_112_B[&index=10]:0.001892[&brlen_95%_HPD={0.000366,0.003797}],n_BLS2_089_C[&index=12]:0.009995[&brlen_95%_HPD={5e-06,0.032855}])[&index=23]:0.002037[&posterior=0.037975,brlen_95%_HPD={6.1e-05,0.003379}],deg_UMA2_112_A[&index=7]:0.001938[&brlen_95%_HPD={0.000646,0.003841}])[&index=24]:0.000000[&posterior=1.000000];
+End;
