@@ -91,6 +91,6 @@ Step 77 / 80		****************************************
 Step 78 / 80		****************************************
 Step 79 / 80		****************************************
 Step 80 / 80		****************************************
--8099.761
+-8073.968
    Error:	Could not read file named "stepping_stone_c_RHSK1_182_2.trees" in directory named "output" because the file does not exist
    Error:	Problem processing line 187 in file "ss_c_RHSK1_182_80_2tips.Rev"

@@ -91,6 +91,6 @@ Step 77 / 80		****************************************
 Step 78 / 80		****************************************
 Step 79 / 80		****************************************
 Step 80 / 80		****************************************
--8121.455
+-8190.848
    Error:	Could not read file named "stepping_stone_c_MDKH8_075_1.trees" in directory named "output" because the file does not exist
    Error:	Problem processing line 182 in file "ss_c_MDKH8_075_80_1tips.Rev"
