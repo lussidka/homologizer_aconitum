@@ -9,7 +9,7 @@ TARGET_CSV="scripts/data/target_samples.csv"
 OUTPUT_DIR="scripts"
 
 # NASTAVENÍ: Kolik target vzorků chceme přidat ke core vzorkům
-NUM_TARGET_TO_TAKE=50
+NUM_TARGET_TO_TAKE=19
 
 mkdir -p "$OUTPUT_DIR"
 

@@ -1,9 +1,9 @@
 
-genecopyFn='scripts/h_10_targets.csv'
-tree_file = 'scripts/output/homologizer_map_rooted'
-input_dir = 'scripts/output/'
-output_dir = 'scripts/output/'
-prefix = 'scripts/output/homologizer'
+genecopyFn='output/h_20_targets.csv'
+tree_file = 'output/h_20_targets_20kgen_map_rooted.tree'
+input_dir = 'output/'
+output_dir = 'output/'
+prefix = 'output/h_20_targets'
 
 library(ggplot2)
 library(plyr)
@@ -91,7 +91,7 @@ homologized = function (p, data, data_labels, offset = 0, width = 1, low = "gree
     dd3 = data.frame()
     start_x = max(dd$x)
     height = max(dd$y)
-    margin = 0.006
+    margin = 0.015
     for (y in unique(dd$y)) {
       pp = mean(dd[dd$y == y, 'value'], na.rm=TRUE)
       dd4 = data.frame(pp = pp, x = pp/200 + margin + start_x, y=y)
@@ -140,64 +140,67 @@ homologized = function (p, data, data_labels, offset = 0, width = 1, low = "gree
   return(p2)
 }
 
+all_tips = unname(unlist(samples))
 
-# populate empty dataframes to hold results
-map_prob_results = data.frame()
-joint_map_phase_results = data.frame()
-for (sample in names(samples)) {
-  sample_joint_map_prob = data.frame()
-  sample_joint_map_phase = data.frame()
-  for (i in 1:length(loci)) {
-    sample_joint_map_prob[1, loci[i]] = 0.0
-    sample_joint_map_phase[1, loci[i]] = ''
-    row.names(sample_joint_map_prob) = c(sample)
-    row.names(sample_joint_map_phase) = c(sample)
-  }
-  map_prob_results = rbind(map_prob_results, sample_joint_map_prob)
-  joint_map_phase_results = rbind(joint_map_phase_results, sample_joint_map_phase)
-}
+map_prob_results = as.data.frame(matrix(0.0, nrow = length(all_tips), ncol = length(loci),
+                                        dimnames = list(all_tips, loci)))
+joint_map_phase_results = as.data.frame(matrix("", nrow = length(all_tips), ncol = length(loci),
+                                               dimnames = list(all_tips, loci)), stringsAsFactors = FALSE)
 
-# for each sample loop over each locus
 marginal_results = data.frame()
-for (sample in names(samples)) {
 
+for (sample in names(samples)) {
+  sample_tips = as.character(samples[[sample]])
   joint_results = data.frame()
+  
   for (i in 1:length(loci)) {
-    # read in file and exclude burnin
-    f_in = paste0(prefix, '_locus_',i, '_phase.log')
-    d = read.csv(f_in, sep='\t',stringsAsFactors = TRUE,row.names=1)
-    d = d[floor(nrow(d)*burnin):nrow(d),]
+    f_in = paste0(prefix, '_locus_', i, '_phase.log')
     
-    # get joint phase assignments for this locus
-    d1 = d[, samples[[sample]]]
+    if (!file.exists(f_in)) next
+    
+    d = read.csv(f_in, sep = '\t', stringsAsFactors = TRUE, row.names = 1)
+    d = d[floor(nrow(d) * burnin):nrow(d), , drop = FALSE]
+    
+    d1 = d[, sample_tips, drop = FALSE]
     joint_results_locus = as.data.frame(table(d1))
+    
+    if (length(sample_tips) == 1) {
+      names(joint_results_locus)[1] = sample_tips
+    }
+    
     joint_results_locus$joint_prob = joint_results_locus$Freq / sum(joint_results_locus$Freq)
     joint_results_locus$locus = loci[i]
-    joint_results = rbind(joint_results, joint_results_locus) 
-   
-    # get the MAP joint phase for the plot
-    map = which(joint_results_locus['joint_prob'] == max(joint_results_locus['joint_prob']))[1]
-    for (tip in samples[[sample]]) {
-      #map_prob_results[tip,loci[i]] = joint_results_locus[map, 'joint_prob']
-      joint_map_phase_results[tip,loci[i]] = as.character(joint_results_locus[map, tip])
+    joint_results = rbind(joint_results, joint_results_locus)
+    
+    map_idx = which.max(joint_results_locus$joint_prob)
+    for (tip in sample_tips) {
+      if (tip %in% names(joint_results_locus)) {
+        val = as.character(joint_results_locus[map_idx, tip])
+        if (length(val) > 0) {
+          joint_map_phase_results[tip, loci[i]] = val
+        }
+      }
     }
     
-    # get marginal posterior probs
-    for (tip in samples[[sample]]) {
-      m = as.data.frame(table(d[[tip]]))
-      m$marginal_prob = m$Freq / sum(m$Freq)
-      m$phase = m$Var1
-      m = within(m, rm(Freq))
-      m = within(m, rm(Var1))
-      m$locus = loci[i]
-      m$tip_name = tip
-      marginal_results = rbind(marginal_results, m)
+    for (tip in sample_tips) {
+      if (tip %in% names(d)) {
+        m = as.data.frame(table(d[[tip]]))
+        m$marginal_prob = m$Freq / sum(m$Freq)
+        m$phase = m$Var1
+        m$Freq = NULL
+        m$Var1 = NULL
+        m$locus = loci[i]
+        m$tip_name = tip
+        marginal_results = rbind(marginal_results, m)
+      }
     }
   }
-  joint_results = within(joint_results, rm(Freq))
-  #out_file = paste0(prefix, '_joint_phase_probs_', sample, '.csv')
-  #write.csv(joint_results, out_file, row.names=FALSE)
+  
+  if ("Freq" %in% names(joint_results)) {
+    joint_results = within(joint_results, rm(Freq))
+  }
 }
+
 #out_file = paste0(prefix, '_marginal_phase_probs.csv')
 #write.csv(marginal_results, out_file, row.names=FALSE)
 
@@ -215,11 +218,12 @@ for (sample in names(samples)) {
 
 tree = treeio::read.beast(tree_file)
 #tree@phylo = drop.tip(tree@phylo, '6379_BLANK2')
+
 p = ggtree(tree) 
-p = p + geom_tiplab(size=2, align=T, linesize=0.25, offset=0.0005)  
+p = p + geom_tiplab(size=2, align=T, linesize=0.25, offset=0.0008)  
 p = homologized(p, map_prob_results, joint_map_phase_results, 
-                offset=0.018, low="#EE0000", mid="#FF0099", high="#DDDDFF", 
-                colnames_position="top", font.size=2, width=0.5,
+                offset=0.015, low="#EE0000", mid="#FF0099", high="#DDDDFF", 
+                colnames_position="top", font.size=1, width=0.4,
                 legend_title="Posterior\nProbability") 
 p = p + theme(legend.text=element_text(size=6),
               legend.title=element_text(size=8))
@@ -227,3 +231,48 @@ p
 #p = p + scale_fill_viridis_c(option="D", name="Posterior\nProbability", na.value="white")
 #p = p + scale_color_viridis_c(option="D", name="Posterior\nProbability", na.value="white")
 ggsave('homologized_prezentace_joint_MAP.pdf', height=3, width=7)
+
+
+
+
+library(ggplot2)
+library(ggtree)
+library(ape)
+
+# 1. Vytvoření stromu
+p <- ggtree(tree)
+p <- p + geom_tiplab(size = 2, align = TRUE, linesize = 0.25, offset = 0.0005)
+
+# 2. Vykreslení Homologizer dat
+p <- homologized(
+  p, 
+  map_prob_results, 
+  joint_map_phase_results, 
+  offset = 0.018,
+  low = "#EE0000", 
+  mid = "#FF0099", 
+  high = "#DDDDFF", 
+  colnames_position = "top", 
+  font.size = 1.3,
+  width = 1,                   # šířka sloupců
+  legend_title = "Posterior\nProbability"
+)
+
+p <- p + theme(
+  legend.text = element_text(size = 7),
+  legend.title = element_text(size = 9),
+  plot.margin = margin(t = 10, r = 20, b = 10, l = 40, unit = "pt")
+)
+
+# 3. Zjištění počtu taxonů (funguje pro S3 phylo i S4 treedata)
+pocet_taxonu <- ape::Ntip(tree)
+vyska_grafu <- max(12, pocet_taxonu * 0.35)
+p
+# 4. Uložení do PDF
+ggsave(
+  filename = "homologizer_vsechny_vzorky.pdf",
+  plot = p,
+  width = 16,
+  height = vyska_grafu,
+  limitsize = FALSE
+)

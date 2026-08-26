@@ -1,1 +1,0 @@
-   Error:	Could not open file "ss_c_RHSK1_182_3tips.Rev".

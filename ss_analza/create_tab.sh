@@ -1,9 +1,9 @@
 #!/bin/bash
 
-LOG_DIR="scripts/txt_files"
-RESULTS_CSV="scripts/txt_files/results_ss.csv"
+LOG_DIR="scripts/txt_files_ruzne-optimalizace"
+RESULTS_CSV="scripts/txt_files_ruzne-optimalizace/results_ss.csv"
 
-mkdir -p scripts/data/ss_scripts/txt_files
+mkdir -p scripts/data/ss_scripts/txt_files_ruzne-optimalizace
 
 echo "sample;ploidy;run1;run2;run3;run4;run5" > "$RESULTS_CSV"
 
@@ -35,7 +35,7 @@ for TXT1 in "$LOG_DIR"/*_1.txt; do
             VAL="-999999.99"
 
         else
-            VAL=$(grep -A1 "Step 50 / 50" "$TXT_FILE" | tail -n1 | tr -d '[:space:]')
+            VAL=$(awk '/Step/ && ($2 == $4) { getline; print $1; exit }' "$TXT_FILE" | tr -d '\r\n[:space:]')
 
             if [ -z "$VAL" ] || [[ "$VAL" == *"*"* ]]; then
                 echo "  [!] Could not extract marginal likelihood from $TXT_FILE"

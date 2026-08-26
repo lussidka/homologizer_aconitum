@@ -6,7 +6,7 @@ TARGET_CSV_FILE="scripts/data/target_samples.csv"
 OUTPUT_DIR="scripts/nexus_files_samples"
 
 # Nastavte požadovaný počet target vzorků (např. 10, 50 atd.)
-NUM_TARGET_TO_TAKE=50
+NUM_TARGET_TO_TAKE=21
 
 mkdir -p "$OUTPUT_DIR"
 

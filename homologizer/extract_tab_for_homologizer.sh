@@ -2,7 +2,7 @@
 
 # Povolí prázdný seznam, pokud žádný soubor neodpovídá masce
 shopt -s nullglob
-FILES=(*targets.Rev scripts/*targets.Rev)
+FILES=(h_19*.Rev scripts/h_19*.Rev)
 shopt -u nullglob
 
 if [ ${#FILES[@]} -eq 0 ]; then

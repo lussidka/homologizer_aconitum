@@ -56,9 +56,6 @@ data[1].addMissingTaxa("n_BNFA5_131_BLANK1")
 data[1].addMissingTaxa("n_BNFA5_131_BLANK2")
 data[1].addMissingTaxa("n_BNFA5_131_BLANK3")
 data[1].addMissingTaxa("n_BOJ2_050_BLANK1")
-data[1].addMissingTaxa("n_BOJ8_051_BLANK1")
-data[1].addMissingTaxa("n_BOJ8_051_BLANK2")
-data[1].addMissingTaxa("n_BOJ8_051_BLANK3")
 data[2].addMissingTaxa("n_BDJKH2_105_BLANK1")
 data[2].addMissingTaxa("n_BDJKH2_105_BLANK2")
 data[2].addMissingTaxa("n_BDJKH8_106_BLANK1")
@@ -80,8 +77,6 @@ data[2].addMissingTaxa("n_BKO5_054_BLANK2")
 data[2].addMissingTaxa("n_BKO5_055_BLANK1")
 data[2].addMissingTaxa("n_BLS5_154_BLANK1")
 data[2].addMissingTaxa("n_BNFA5_131_BLANK1")
-data[2].addMissingTaxa("n_BOJ8_051_BLANK1")
-data[2].addMissingTaxa("n_BOJ8_051_BLANK2")
 
 # --- INITIAL PHASE SETUP ---
 # Locus 1 Setup (RPB2)
@@ -164,14 +159,6 @@ data[2].addMissingTaxa("n_BOJ8_051_BLANK2")
     data[1].setHomeologPhase("n_BOJ2_050_copy1", "n_BOJ2_050_A")
     data[1].setHomeologPhase("n_BOJ2_050_copy2", "n_BOJ2_050_B")
     data[1].setHomeologPhase("n_BOJ2_050_BLANK1", "n_BOJ2_050_C")
-    # Target Sample: n_BOJ5_136 (Locus 1)
-    data[1].setHomeologPhase("n_BOJ5_136_copy1", "n_BOJ5_136_A")
-    data[1].setHomeologPhase("n_BOJ5_136_copy2", "n_BOJ5_136_B")
-    # Target Sample: n_BOJ8_051 (Locus 1)
-    data[1].setHomeologPhase("n_BOJ8_051_copy1", "n_BOJ8_051_A")
-    data[1].setHomeologPhase("n_BOJ8_051_BLANK1", "n_BOJ8_051_B")
-    data[1].setHomeologPhase("n_BOJ8_051_BLANK2", "n_BOJ8_051_C")
-    data[1].setHomeologPhase("n_BOJ8_051_BLANK3", "n_BOJ8_051_D")
 
 # Locus 2 Setup (EIF3E)
     # deg_UMA2_112 (Locus 2)
@@ -253,14 +240,6 @@ data[2].addMissingTaxa("n_BOJ8_051_BLANK2")
     data[2].setHomeologPhase("n_BOJ2_050_copy1", "n_BOJ2_050_A")
     data[2].setHomeologPhase("n_BOJ2_050_copy2", "n_BOJ2_050_B")
     data[2].setHomeologPhase("n_BOJ2_050_copy3", "n_BOJ2_050_C")
-    # Target Sample: n_BOJ5_136 (Locus 2)
-    data[2].setHomeologPhase("n_BOJ5_136_copy1", "n_BOJ5_136_A")
-    data[2].setHomeologPhase("n_BOJ5_136_copy2", "n_BOJ5_136_B")
-    # Target Sample: n_BOJ8_051 (Locus 2)
-    data[2].setHomeologPhase("n_BOJ8_051_copy1", "n_BOJ8_051_A")
-    data[2].setHomeologPhase("n_BOJ8_051_copy2", "n_BOJ8_051_B")
-    data[2].setHomeologPhase("n_BOJ8_051_BLANK1", "n_BOJ8_051_C")
-    data[2].setHomeologPhase("n_BOJ8_051_BLANK2", "n_BOJ8_051_D")
 
 
 # Fixní Core vzorky - Lokus 1
@@ -438,13 +417,6 @@ for (i in 1:num_loci) {
     moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BOJ2_050_A", "n_BOJ2_050_B", weight=2)
     moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BOJ2_050_A", "n_BOJ2_050_C", weight=2)
     moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BOJ2_050_B", "n_BOJ2_050_C", weight=2)
-    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BOJ5_136_A", "n_BOJ5_136_B", weight=2)
-    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BOJ8_051_A", "n_BOJ8_051_B", weight=2)
-    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BOJ8_051_A", "n_BOJ8_051_C", weight=2)
-    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BOJ8_051_A", "n_BOJ8_051_D", weight=2)
-    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BOJ8_051_B", "n_BOJ8_051_C", weight=2)
-    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BOJ8_051_B", "n_BOJ8_051_D", weight=2)
-    moves[++mvi] = mvHomeologPhase(ctmc[i], "n_BOJ8_051_C", "n_BOJ8_051_D", weight=2)
 }
 
 for (i in 1:num_loci) {
@@ -477,7 +449,7 @@ if (bayes_factors) {
 
     # run MCMC 
     mymcmc = mcmc(mymodel, monitors, moves)
-    mymcmc.run(generations=2000)
+    mymcmc.run(generations=5000)
 
     # summarize results
     treetrace = readTreeTrace(output_file + ".trees", treetype="non-clock", burnin=0.25) 

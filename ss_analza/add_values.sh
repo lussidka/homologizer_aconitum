@@ -1,7 +1,7 @@
 #!/bin/bash
 
-INPUT_CSV="scripts/txt_files/results_ss.csv"
-OUTPUT_CSV="scripts/txt_files/results_ss_values.csv"
+INPUT_CSV="scripts/txt_files_ruzne-optimalizace/results_ss.csv"
+OUTPUT_CSV="scripts/txt_files_ruzne-optimalizace/results_ss_values.csv"
 
 
 export LC_ALL=C
