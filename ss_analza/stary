@@ -1,0 +1,122 @@
+from pathlib import Path
+import csv
+
+# Snakemake pipeline pro stepping-stone analýzu
+WORKDIR = Path(workflow.current_basedir).resolve()
+
+
+def load_target_samples():
+    target_csv = WORKDIR / "scripts" / "data" / "target_samples.csv"
+    rows = []
+    with target_csv.open("r", encoding="utf-8-sig", newline="") as fh:
+        reader = csv.DictReader(fh, delimiter=";")
+        for row in reader:
+            sample = (row.get("vzorek") or "").strip()
+            if not sample:
+                continue
+            rpb2 = int((row.get("RPB2") or "0").strip())
+            eif3e = int((row.get("Eif3E") or "0").strip())
+            max_copies = int((row.get("polyploidie") or "0").strip())
+            max_real = max(rpb2, eif3e)
+
+            # Stejné filtrování jako v bash skriptu:
+            if max_real >= max_copies:
+                continue
+
+            ploidies = list(range(max_real, max_copies + 1))
+            rows.append((sample, ploidies))
+    return rows
+
+
+TARGET_SAMPLE_PLOIDIES = load_target_samples()
+TARGETS = [(sample, ploidy) for sample, ploidies in 
+
+# ------------------------------------------------------------------------------
+# 1. CÍL PIPELINE
+# ------------------------------------------------------------------------------
+rule all:
+    input:
+        "scripts/txt_files/results_ss_values.csv"
+
+# ------------------------------------------------------------------------------
+# 2. PŘÍPRAVA DAT (Generování .nex a .Rev skriptů)
+# ------------------------------------------------------------------------------
+rule prepare_inputs:
+    input:
+        create_nex_script="create_nex.sh",
+        generate_scripts_script="generate_ss_scripts.sh",
+        core_csv="scripts/data/core_samples.csv",
+        target_csv="scripts/data/target_samples.csv",
+        eif3e_nexus="scripts/data/EIF3E_test.nex",
+        rpb2_nexus="scripts/data/RPB2_test.nex",TARGET_SAMPLE_PLOIDIES for ploidy in ploidies]
+REPLICATES = [1, 2, 3, 4, 5]  # Počet replikátů pro každý vzorek a ploidii
+    output:
+        # Dynamicky naplánováno, že se vytvoří tyto RevBayes skripty
+        revs=[f"scripts/ss_{sample}_{ploidy}tips.Rev" for sample, ploidy in TARGETS],
+        done=touch("scripts/.prepare.done")
+    params:
+        workdir=str(WORKDIR),
+    shell:
+        "cd {params.workdir} && bash create_nex.sh && bash generate_ss_scripts.sh"
+
+# ------------------------------------------------------------------------------
+# 3. SAMOTNÝ VÝPOČET (RevBayes - bezpečně paralelně po jednom replikátu)
+# ------------------------------------------------------------------------------
+rule run_ss_replicate:
+    input:
+        prepared="scripts/.prepare.done",
+        rev="scripts/ss_{sample}_{ploidy}tips.Rev",
+    output:
+        "scripts/txt_files/ss_{sample}_{ploidy}tips_{replicate}.txt",
+    params:
+        workdir=str(WORKDIR),
+    shell:
+        """
+        # 1. Ujistíme se, že složka pro textové logy existuje
+        mkdir -p scripts/txt_files
+        
+        # 2. Vytvoříme unikátní pracovní složku pro tento konkrétní replikát
+        RUN_DIR="scripts/run_{wildcards.sample}_{wildcards.ploidy}tips_rep{wildcards.replicate}"
+        mkdir -p $RUN_DIR
+        
+        # 3. Zkopírujeme do ní .Rev skript a uděláme zástupce (symlink) na data, aby je RevBayes našel
+        cp {input.rev} $RUN_DIR/
+        ln -sf {params.workdir}/scripts/nexus_files_samples $RUN_DIR/nexus_files_samples
+        
+        # 4. Přesuneme se do této složky a spustíme výpočet naprosto izolovaně!
+        cd $RUN_DIR
+        rb ss_{wildcards.sample}_{wildcards.ploidy}tips.Rev > {params.workdir}/scripts/txt_files/ss_{wildcards.sample}_{wildcards.ploidy}tips_{wildcards.replicate}.txt || true
+        """
+# ------------------------------------------------------------------------------
+# 4. EXTRACKE DAT (Sběr hodnot Marginal Likelihoods ze všech logů)
+# ------------------------------------------------------------------------------
+rule extract_raw_likelihoods:
+    input:
+        # Snakemake počká, až se vytvoří ÚPLNĚ VŠECHNY .txt soubory
+        reps=[
+            f"scripts/txt_files/ss_{sample}_{ploidy}tips_{replicate}.txt"
+            for sample, ploidy in TARGETS
+            for replicate in REPLICATES
+        ],
+    output:
+        # Výstupem je hrubá tabulka
+        "scripts/txt_files/results_ss.csv",
+    params:
+        workdir=str(WORKDIR),
+    shell:
+        "cd {params.workdir} && bash create_tab.sh"
+
+# ------------------------------------------------------------------------------
+# 5. FINÁLNÍ STATISTIKA (Výpočet průměrů a Bayesových faktorů)
+# ------------------------------------------------------------------------------
+rule calculate_bayes_factors:
+    input:
+        # Spustí se až ve chvíli, kdy je hrubá tabulka hotová
+        "scripts/txt_files/results_ss.csv",
+    output:
+        # Finální tabulka s celkovou statistikou
+        "scripts/txt_files/results_ss_values.csv",
+    params:
+        workdir=str(WORKDIR),
+    shell:
+        "cd {params.workdir} && bash add_values.sh"
