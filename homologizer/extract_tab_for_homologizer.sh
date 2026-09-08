@@ -2,11 +2,11 @@
 
 # Povolí prázdný seznam, pokud žádný soubor neodpovídá masce
 shopt -s nullglob
-FILES=(h_19*.Rev scripts/h_19*.Rev)
+FILES=(*_128_*.Rev scripts/vzroky_vsechno_po_jednom/*_128_*.Rev)
 shopt -u nullglob
 
 if [ ${#FILES[@]} -eq 0 ]; then
-    echo "⚠️ Nebyly nalezeny žádné soubory odpovídající vzoru '*targets.Rev'."
+    echo "⚠️ Nebyly nalezeny žádné soubory odpovídající vzoru '*_128_*.Rev'."
     exit 1
 fi
 

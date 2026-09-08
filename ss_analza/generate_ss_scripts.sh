@@ -11,10 +11,10 @@ OUTPUT_DIR="scripts"
 mkdir -p "$OUTPUT_DIR"
 
 # Transformation of the numbers to letters (index 1 = A,..)
-LETTERS=(X A B C D E F G H I J)
+LETTERS=(X A B C D E F G H I J K L M N O P)
 
 # ==============================================================================
-# processing of core samples (generating shared blocks)
+# 1. PROCESSING OF CORE SAMPLES (generating shared blocks)
 # ==============================================================================
 CORE_BLANK_RPB2=""
 CORE_BLANK_EIF3E=""
@@ -34,7 +34,7 @@ while IFS=';,' read -r C_SAMPLE_ID C_RPB2_COUNT C_EIF3E_COUNT C_PHASE_COUNT C_MA
 
     if [ -z "$C_SAMPLE_ID" ]; then continue; fi
     
-    # Add missing taxa for core samples - USING BLANK LOGIC
+    # Missing taxa for core samples
     # RPB2 (Lokus 1)
     if [ "$C_RPB2_COUNT" -lt "$C_PHASE_COUNT" ]; then
         blank_idx=1
@@ -53,13 +53,9 @@ while IFS=';,' read -r C_SAMPLE_ID C_RPB2_COUNT C_EIF3E_COUNT C_PHASE_COUNT C_MA
         done
     fi
 
-    # ==========================================================================
-    # setting the logic for phase assignment: FIXED vs. DYNAMIC CORE SAMPLES
-    # ==========================================================================
+    # Phasing setup for Core samples
     if [ "$C_SAMPLE_ID" == "n_VJJS2_011" ]; then
         
-        # Pomocná funkce, která rozhodne, jestli je to "copyX" nebo "BLANKX" 
-        # podle skutečného počtu sekvencí v daném lokusu.
         get_taxon_name() {
             local copy_num=$1
             local real_count=$2
@@ -73,18 +69,17 @@ while IFS=';,' read -r C_SAMPLE_ID C_RPB2_COUNT C_EIF3E_COUNT C_PHASE_COUNT C_MA
 
         # Locus 1 (RPB2)
         CORE_PHASE_FIXED_L1+="    # $C_SAMPLE_ID (FIXED)\n"
-        CORE_PHASE_FIXED_L1+="    data[i].setHomeologPhase(\"$(get_taxon_name 3 $C_RPB2_COUNT)\", \"${C_SAMPLE_ID}_A\")\n"
-        CORE_PHASE_FIXED_L1+="    data[i].setHomeologPhase(\"$(get_taxon_name 2 $C_RPB2_COUNT)\", \"${C_SAMPLE_ID}_B\")\n"
-        CORE_PHASE_FIXED_L1+="    data[i].setHomeologPhase(\"$(get_taxon_name 1 $C_RPB2_COUNT)\", \"${C_SAMPLE_ID}_C\")\n"
+        CORE_PHASE_FIXED_L1+="    data[1].setHomeologPhase(\"$(get_taxon_name 3 $C_RPB2_COUNT)\", \"${C_SAMPLE_ID}_A\")\n"
+        CORE_PHASE_FIXED_L1+="    data[1].setHomeologPhase(\"$(get_taxon_name 2 $C_RPB2_COUNT)\", \"${C_SAMPLE_ID}_B\")\n"
+        CORE_PHASE_FIXED_L1+="    data[1].setHomeologPhase(\"$(get_taxon_name 1 $C_RPB2_COUNT)\", \"${C_SAMPLE_ID}_C\")\n"
 
         # Locus 2 (EIF3E)
         CORE_PHASE_FIXED_L2+="    # $C_SAMPLE_ID (FIXED)\n"
-        CORE_PHASE_FIXED_L2+="    data[i].setHomeologPhase(\"$(get_taxon_name 3 $C_EIF3E_COUNT)\", \"${C_SAMPLE_ID}_A\")\n"
-        CORE_PHASE_FIXED_L2+="    data[i].setHomeologPhase(\"$(get_taxon_name 2 $C_EIF3E_COUNT)\", \"${C_SAMPLE_ID}_B\")\n"
-        CORE_PHASE_FIXED_L2+="    data[i].setHomeologPhase(\"$(get_taxon_name 1 $C_EIF3E_COUNT)\", \"${C_SAMPLE_ID}_C\")\n"
+        CORE_PHASE_FIXED_L2+="    data[2].setHomeologPhase(\"$(get_taxon_name 3 $C_EIF3E_COUNT)\", \"${C_SAMPLE_ID}_A\")\n"
+        CORE_PHASE_FIXED_L2+="    data[2].setHomeologPhase(\"$(get_taxon_name 2 $C_EIF3E_COUNT)\", \"${C_SAMPLE_ID}_B\")\n"
+        CORE_PHASE_FIXED_L2+="    data[2].setHomeologPhase(\"$(get_taxon_name 1 $C_EIF3E_COUNT)\", \"${C_SAMPLE_ID}_C\")\n"
 
     else
-        # setting of the phasing for dynamic core samples (separated for L1 and L2)
         if [ "$C_PHASE_COUNT" -gt 1 ]; then
             CORE_PHASE_DYNAMIC_L1+="    # $C_SAMPLE_ID (Locus 1)\n"
             CORE_PHASE_DYNAMIC_L2+="    # $C_SAMPLE_ID (Locus 2)\n"
@@ -112,13 +107,13 @@ while IFS=';,' read -r C_SAMPLE_ID C_RPB2_COUNT C_EIF3E_COUNT C_PHASE_COUNT C_MA
             done
         fi
 
-        # moves for dynamic core samples
+        # Moves for dynamic core samples
         if [ "$C_PHASE_COUNT" -eq 2 ]; then
-            CORE_MOVES+="    moves[++mvi] = mvHomeologPhase(ctmc[i], \"${C_SAMPLE_ID}_A\", \"${C_SAMPLE_ID}_B\", weight=2)\n"
+            CORE_MOVES+="    moves[++mvi] = mvHomeologPhase(ctmc[i], \"${C_SAMPLE_ID}_A\", \"${C_SAMPLE_ID}_B\", weight=5)\n"
         elif [ "$C_PHASE_COUNT" -gt 2 ]; then
             for (( x=1; x<=C_PHASE_COUNT; x++ )); do
                 for (( y=x+1; y<=C_PHASE_COUNT; y++ )); do
-                    CORE_MOVES+="    moves[++mvi] = mvHomeologPhase(ctmc[i], \"${C_SAMPLE_ID}_${LETTERS[$x]}\", \"${C_SAMPLE_ID}_${LETTERS[$y]}\", weight=2)\n"
+                    CORE_MOVES+="    moves[++mvi] = mvHomeologPhase(ctmc[i], \"${C_SAMPLE_ID}_${LETTERS[$x]}\", \"${C_SAMPLE_ID}_${LETTERS[$y]}\", weight=5)\n"
                 done
             done
         fi
@@ -127,7 +122,7 @@ while IFS=';,' read -r C_SAMPLE_ID C_RPB2_COUNT C_EIF3E_COUNT C_PHASE_COUNT C_MA
 done < <(tail -n +2 "$CORE_CSV")
 
 # ==============================================================================
-# PROCESSING OF TARGET SAMPLES
+# 2. PROCESSING OF TARGET SAMPLES
 # ==============================================================================
 while IFS=';,' read -r SAMPLE_ID RPB2_COUNT EIF3E_COUNT PHASE_COUNT MAX_COPIES rest; do
     
@@ -141,87 +136,94 @@ while IFS=';,' read -r SAMPLE_ID RPB2_COUNT EIF3E_COUNT PHASE_COUNT MAX_COPIES r
 
     MAX_REAL=$(( RPB2_COUNT > EIF3E_COUNT ? RPB2_COUNT : EIF3E_COUNT ))
 
-    # 1. Detekce anomálie / chyby v datech (nalezeno víc kopií než je MAX_COPIES)
+    # Kontrola anomálie
     if [ "$MAX_REAL" -gt "$MAX_COPIES" ]; then
         echo "❌ CHYBA u vzorku '$SAMPLE_ID': nalezeno $MAX_REAL reálných kopií, ale MAX_COPIES v tabulce je jen $MAX_COPIES!"
         continue
     fi
 
-    # 2. Přeskočení vzorků s pouze jednou variantou ploidie (není co porovnávat)
+    # Přeskočení, pokud není co porovnávat
     if [ "$MAX_REAL" -eq "$MAX_COPIES" ]; then
-        echo "⏭️ Přeskakuji vzorek '$SAMPLE_ID': má fixní ploidii $MAX_REAL (MAX_REAL == MAX_COPIES), není s čím porovnávat."
+        echo "⏭️ Přeskakuji vzorek '$SAMPLE_ID': má fixní počet fází $MAX_REAL (MAX_REAL == MAX_COPIES)."
         continue
     fi
 
-    for (( TESTED_PLOIDY=MAX_REAL; TESTED_PLOIDY<=MAX_COPIES; TESTED_PLOIDY++ )); do
+    # --------------------------------------------------------------------------
+    # BLOKY PŘIPRAVENÉ ROVNOU PRO MAXIMÁLNÍ POČET TIPS (MAX_COPIES)
+    # --------------------------------------------------------------------------
+    
+    # 1. Missing Taxa (BLANKs) generované až do MAX_COPIES
+    BLANK_LINES_RPB2=""
+    if [ "$RPB2_COUNT" -lt "$MAX_COPIES" ]; then
+        blank_idx=1
+        for (( j=RPB2_COUNT+1; j<=MAX_COPIES; j++ )); do
+            BLANK_LINES_RPB2+="\ndata[1].addMissingTaxa(\"${SAMPLE_ID}_BLANK${blank_idx}\")"
+            ((blank_idx++))
+        done
+    fi
+
+    BLANK_LINES_EIF3E=""
+    if [ "$EIF3E_COUNT" -lt "$MAX_COPIES" ]; then
+        blank_idx=1
+        for (( j=EIF3E_COUNT+1; j<=MAX_COPIES; j++ )); do
+            BLANK_LINES_EIF3E+="\ndata[2].addMissingTaxa(\"${SAMPLE_ID}_BLANK${blank_idx}\")"
+            ((blank_idx++))
+        done
+    fi
+
+    # 2. Initial Phase Mapping (setHomeologPhase) pro všech 1..MAX_COPIES
+    DYNAMIC_PHASE_LINES_L1=""
+    DYNAMIC_PHASE_LINES_L2=""
+    
+    if [ "$MAX_COPIES" -gt 1 ]; then
+        DYNAMIC_PHASE_LINES_L1+="    # Target Sample Initial Phasing (Locus 1)\n"
+        DYNAMIC_PHASE_LINES_L2+="    # Target Sample Initial Phasing (Locus 2)\n"
         
-        OUTPUT_FILE_PATH="${OUTPUT_DIR}/ss_${SAMPLE_ID}_${TESTED_PLOIDY}tips.Rev"
-        echo "Generating script for: $SAMPLE_ID (Tested ploidy: $TESTED_PLOIDY) -> $OUTPUT_FILE_PATH"
-
-        # ADD MISSING TAXA FOR TARGET SAMPLES - USING BLANK LOGIC
-        BLANK_LINES_RPB2=""
-        if [ "$RPB2_COUNT" -lt "$TESTED_PLOIDY" ]; then
-            blank_idx=1
-            for (( j=RPB2_COUNT+1; j<=TESTED_PLOIDY; j++ )); do
-                BLANK_LINES_RPB2+="\ndata[1].addMissingTaxa(\"${SAMPLE_ID}_BLANK${blank_idx}\")"
-                ((blank_idx++))
-            done
-        fi
-
-        BLANK_LINES_EIF3E=""
-        if [ "$EIF3E_COUNT" -lt "$TESTED_PLOIDY" ]; then
-            blank_idx=1
-            for (( j=EIF3E_COUNT+1; j<=TESTED_PLOIDY; j++ )); do
-                BLANK_LINES_EIF3E+="\ndata[2].addMissingTaxa(\"${SAMPLE_ID}_BLANK${blank_idx}\")"
-                ((blank_idx++))
-            done
-        fi
-
-        # SETTING OF THE PHASING FOR TARGET SAMPLES (Separated per locus)
-        DYNAMIC_PHASE_LINES_L1=""
-        DYNAMIC_PHASE_LINES_L2=""
+        # L1 Phasing (až do MAX_COPIES)
+        blank_idx_l1=1
+        for (( c=1; c<=MAX_COPIES; c++ )); do
+            if [ "$c" -le "$RPB2_COUNT" ]; then
+                DYNAMIC_PHASE_LINES_L1+="    data[1].setHomeologPhase(\"${SAMPLE_ID}_copy${c}\", \"${SAMPLE_ID}_${LETTERS[$c]}\")\n"
+            else
+                DYNAMIC_PHASE_LINES_L1+="    data[1].setHomeologPhase(\"${SAMPLE_ID}_BLANK${blank_idx_l1}\", \"${SAMPLE_ID}_${LETTERS[$c]}\")\n"
+                ((blank_idx_l1++))
+            fi
+        done
         
-        if [ "$TESTED_PLOIDY" -gt 1 ]; then
-            DYNAMIC_PHASE_LINES_L1+="    # Dynamic Target Sample Block (Locus 1)\n"
-            DYNAMIC_PHASE_LINES_L2+="    # Dynamic Target Sample Block (Locus 2)\n"
-            
-            # Locus 1 Phasing
-            blank_idx_l1=1
-            for (( c=1; c<=TESTED_PLOIDY; c++ )); do
-                if [ "$c" -le "$RPB2_COUNT" ]; then
-                    DYNAMIC_PHASE_LINES_L1+="    data[1].setHomeologPhase(\"${SAMPLE_ID}_copy${c}\", \"${SAMPLE_ID}_${LETTERS[$c]}\")\n"
-                else
-                    DYNAMIC_PHASE_LINES_L1+="    data[1].setHomeologPhase(\"${SAMPLE_ID}_BLANK${blank_idx_l1}\", \"${SAMPLE_ID}_${LETTERS[$c]}\")\n"
-                    ((blank_idx_l1++))
-                fi
-            done
-            
-            # Locus 2 Phasing
-            blank_idx_l2=1
-            for (( c=1; c<=TESTED_PLOIDY; c++ )); do
-                if [ "$c" -le "$EIF3E_COUNT" ]; then
-                    DYNAMIC_PHASE_LINES_L2+="    data[2].setHomeologPhase(\"${SAMPLE_ID}_copy${c}\", \"${SAMPLE_ID}_${LETTERS[$c]}\")\n"
-                else
-                    DYNAMIC_PHASE_LINES_L2+="    data[2].setHomeologPhase(\"${SAMPLE_ID}_BLANK${blank_idx_l2}\", \"${SAMPLE_ID}_${LETTERS[$c]}\")\n"
-                    ((blank_idx_l2++))
-                fi
-            done
-        fi
+        # L2 Phasing (až do MAX_COPIES)
+        blank_idx_l2=1
+        for (( c=1; c<=MAX_COPIES; c++ )); do
+            if [ "$c" -le "$EIF3E_COUNT" ]; then
+                DYNAMIC_PHASE_LINES_L2+="    data[2].setHomeologPhase(\"${SAMPLE_ID}_copy${c}\", \"${SAMPLE_ID}_${LETTERS[$c]}\")\n"
+            else
+                DYNAMIC_PHASE_LINES_L2+="    data[2].setHomeologPhase(\"${SAMPLE_ID}_BLANK${blank_idx_l2}\", \"${SAMPLE_ID}_${LETTERS[$c]}\")\n"
+                ((blank_idx_l2++))
+            fi
+        done
+    fi
 
-        # MOVES FOR TARGET SAMPLES
+    # --------------------------------------------------------------------------
+    # SMYČKA PŘES TESTOVANÝ POČET FÁZÍ / TIPS
+    # --------------------------------------------------------------------------
+    for (( TESTED_PHASES=MAX_REAL; TESTED_PHASES<=MAX_COPIES; TESTED_PHASES++ )); do
+        
+        OUTPUT_FILE_PATH="${OUTPUT_DIR}/ss_${SAMPLE_ID}_${TESTED_PHASES}tips.Rev"
+        echo "Generating script for: $SAMPLE_ID (Tested phases/tips: $TESTED_PHASES) -> $OUTPUT_FILE_PATH"
+
+        # JEDINÁ ČÁST, KTERÁ SE MĚNÍ DLE TESTED_PHASES: MOVES OPERÁTORY
         DYNAMIC_MOVES=""
-        if [ "$TESTED_PLOIDY" -eq 2 ]; then
-            DYNAMIC_MOVES+="    moves[++mvi] = mvHomeologPhase(ctmc[i], \"${SAMPLE_ID}_A\", \"${SAMPLE_ID}_B\", weight=2)\n"
-        elif [ "$TESTED_PLOIDY" -gt 2 ]; then
-            for (( x=1; x<=TESTED_PLOIDY; x++ )); do
-                for (( y=x+1; y<=TESTED_PLOIDY; y++ )); do
-                    DYNAMIC_MOVES+="    moves[++mvi] = mvHomeologPhase(ctmc[i], \"${SAMPLE_ID}_${LETTERS[$x]}\", \"${SAMPLE_ID}_${LETTERS[$y]}\", weight=2)\n"
+        if [ "$TESTED_PHASES" -eq 2 ]; then
+            DYNAMIC_MOVES+="    moves[++mvi] = mvHomeologPhase(ctmc[i], \"${SAMPLE_ID}_A\", \"${SAMPLE_ID}_B\", weight=5)\n"
+        elif [ "$TESTED_PHASES" -gt 2 ]; then
+            for (( x=1; x<=TESTED_PHASES; x++ )); do
+                for (( y=x+1; y<=TESTED_PHASES; y++ )); do
+                    DYNAMIC_MOVES+="    moves[++mvi] = mvHomeologPhase(ctmc[i], \"${SAMPLE_ID}_${LETTERS[$x]}\", \"${SAMPLE_ID}_${LETTERS[$y]}\", weight=5)\n"
                 done
             done
         fi
 
         # ======================================================================
-        # .Rev file itself
+        # Generování samotného souboru .Rev
         # ======================================================================
         cat << EOF > "$OUTPUT_FILE_PATH"
 #
@@ -232,7 +234,7 @@ while IFS=';,' read -r SAMPLE_ID RPB2_COUNT EIF3E_COUNT PHASE_COUNT MAX_COPIES r
 # Will Freyman
 #
 bayes_factors = FALSE
-output_file = "output/stepping_stone_${SAMPLE_ID}_${TESTED_PLOIDY}"
+output_file = "output/ss_${SAMPLE_ID}_${TESTED_PHASES}"
 
 # input sequence alignments
 alignments = ["nexus_files_samples/RPB2_${SAMPLE_ID}.nex",
@@ -245,34 +247,25 @@ for (i in 1:num_loci) {
 
 # --- MISSING TAXA FOR CORE SAMPLES ---$(echo -e "$CORE_BLANK_RPB2")$(echo -e "$CORE_BLANK_EIF3E")
 
-# --- MISSING TAXA FOR TARGET SAMPLE ---$(echo -e "$BLANK_LINES_RPB2")$(echo -e "$BLANK_LINES_EIF3E")
+# --- MISSING TAXA FOR TARGET SAMPLE (prepared for max tips) ---$(echo -e "$BLANK_LINES_RPB2")$(echo -e "$BLANK_LINES_EIF3E")
 
-# --- INITIAL PHASE SETUP ---
-# Locus 1 Setup (RPB2)
-$(echo -e "$CORE_PHASE_DYNAMIC_L1")
-$(echo -e "$DYNAMIC_PHASE_LINES_L1")
-
-# Locus 2 Setup (EIF3E)
-$(echo -e "$CORE_PHASE_DYNAMIC_L2")
-$(echo -e "$DYNAMIC_PHASE_LINES_L2")
-
-
-# Fixní Core vzorky - Lokus 1
-for (i in 1:1) {
-$(echo -e "$CORE_PHASE_FIXED_L1")
-}
-
-# Fixní Core vzorky - Lokus 2
-for (i in 2:2) {
-$(echo -e "$CORE_PHASE_FIXED_L2")
-}
-
-# PŘESUNOUT? - add missing taxa 
+# Sjednocení taxonů napříč lokusy
 for (i in 1:num_loci) {
     for (j in 1:num_loci) {
         data[i].addMissingTaxa(data[j].taxa())
     }
 }
+
+# --- INITIAL PHASE SETUP ---
+# Locus 1 Setup (RPB2)
+$(echo -e "$CORE_PHASE_DYNAMIC_L1")
+$(echo -e "$CORE_PHASE_FIXED_L1")
+$(echo -e "$DYNAMIC_PHASE_LINES_L1")
+
+# Locus 2 Setup (EIF3E)
+$(echo -e "$CORE_PHASE_DYNAMIC_L2")
+$(echo -e "$CORE_PHASE_FIXED_L2")
+$(echo -e "$DYNAMIC_PHASE_LINES_L2")
 
 num_tips = data[1].ntaxa()
 n_branches = 2 * num_tips - 3
@@ -305,7 +298,7 @@ for (i in 1:1) {
 
     alpha ~ dnUniform( 0.0, 10 )
     sr := fnDiscretizeGamma( alpha, alpha, 4 )
-    moves.append( mvScale(alpha, weight=2.0) )
+    moves[++mvi] = mvScale(alpha, weight=2.0)
 
     if (i == 1) {
         rate_multiplier[i] <- 1.0
@@ -321,7 +314,7 @@ for (i in 1:1) {
 # EIF3E (HKY + G)
 for (i in 2:2) {
     kappa ~ dnLognormal(0.0, 1.0)
-    moves.append( mvScale(kappa) )
+    moves[++mvi] = mvScale(kappa, weight=2.0)
 
     pi_prior <- v(1,1,1,1)
     pi[i] ~ dnDirichlet(pi_prior)
@@ -331,7 +324,7 @@ for (i in 2:2) {
 
     alpha ~ dnUniform( 0.0, 10 )
     sr := fnDiscretizeGamma( alpha, alpha, 4 )
-    moves.append( mvScale(alpha, weight=2.0) )
+    moves[++mvi] = mvScale(alpha, weight=2.0)
 
     if (i == 1) {
         rate_multiplier[i] <- 1.0
@@ -348,7 +341,7 @@ for (i in 2:2) {
 for (i in 1:num_loci) {
     # Core Samples Moves
 $(echo -e "$CORE_MOVES")
-    # Dynamic Moves for Target Sample
+    # Dynamic Moves for Target Sample (only for tested $TESTED_PHASES phases)
 $(echo -e "$DYNAMIC_MOVES")
 }
 
@@ -368,34 +361,23 @@ for (i in 1:num_loci){
 }
 
 if (bayes_factors) {
-
-    # running stepping stone analysis
+    # Stepping stone analysis pro marginální věrohodnost
     pow_p = powerPosterior(mymodel, moves, monitors, output_file + ".out", cats=50, sampleFreq=1) 
     pow_p.burnin(generations=200, tuningInterval=50)
     pow_p.run(generations=1000)  
     ss = steppingStoneSampler(file=output_file + ".out", powerColumnName="power", likelihoodColumnName="likelihood")
-
-    # print the marginal likelihood to screen
     print(ss.marginal())
-
 } else {
+    # Standardní MCMC běh
+    mymcmc = mcmc(mymodel, monitors, moves, nruns=1, combine="none")
+    mymcmc.burnin(generations=200, tuningInterval=50)
+    mymcmc.run(generations=1000)
 
-    # run MCMC 
-pow_p = powerPosterior(mymodel, moves, monitors, output_file + ".out", 
-                       cats=50, sampleFreq=1) 
-pow_p.burnin(generations=200, tuningInterval=50)
-pow_p.run(generations=1000)  
-ss = steppingStoneSampler(file=output_file + ".out", 
-                          powerColumnName="power", likelihoodColumnName="likelihood")
-print(ss.marginal())
-
-    # summarize results
+    # Summarize trees
     treetrace = readTreeTrace(output_file + ".trees", treetype="non-clock", burnin=0.25) 
     map_tree = mapTree(treetrace, output_file + "_map.tree")
     mcc_tree = mccTree(treetrace, output_file + "_mcc.tree")
 }
-
-
 EOF
 
     done
