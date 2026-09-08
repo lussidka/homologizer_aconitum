@@ -1,7 +1,7 @@
 from pathlib import Path
 
 WORKDIR = Path(workflow.current_basedir).resolve()
-REPLICATES = [1, 2, 3, 4, 5]
+REPLICATES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 # Automaticky najde všechny .Rev skripty ve složce scripts/
 REV_SCRIPTS, = glob_wildcards("scripts/{script}.Rev")
