@@ -8,14 +8,7 @@
 bayes_factors = FALSE
 output_file = "output/ss_n_BRS2_099_4"
 
-# input sequence alignments
-alignments = ["nexus_files_samples/RPB2_n_BRS2_099.nex",
-              "nexus_files_samples/EIF3E_n_BRS2_099.nex"]
-num_loci = alignments.size()
 
-for (i in 1:num_loci) {
-    data[i] = readDiscreteCharacterData(alignments[i])
-}
 
 # --- MISSING TAXA FOR CORE SAMPLES ---
 data[1].addMissingTaxa("n_VJJS2_011_BLANK1")
@@ -61,6 +54,15 @@ for (i in 1:num_loci) {
     data[2].setHomeologPhase("n_BRS2_099_copy2", "n_BRS2_099_B")
     data[2].setHomeologPhase("n_BRS2_099_copy3", "n_BRS2_099_C")
     data[2].setHomeologPhase("n_BRS2_099_BLANK1", "n_BRS2_099_D")
+
+# input sequence alignments
+alignments = ["nexus_files_samples/RPB2_n_BRS2_099.nex",
+              "nexus_files_samples/EIF3E_n_BRS2_099.nex"]
+num_loci = alignments.size()
+
+for (i in 1:num_loci) {
+    data[i] = readDiscreteCharacterData(alignments[i])
+}
 
 num_tips = data[1].ntaxa()
 n_branches = 2 * num_tips - 3
@@ -169,9 +171,14 @@ if (bayes_factors) {
     print(ss.marginal())
 } else {
     # Standardní MCMC běh
-    mymcmc = mcmc(mymodel, monitors, moves, nruns=1, combine="none")
-    mymcmc.burnin(generations=200, tuningInterval=50)
-    mymcmc.run(generations=1000)
+        # run MCMC 
+pow_p = powerPosterior(mymodel, moves, monitors, output_file + ".out", 
+                       cats=50, sampleFreq=1) 
+pow_p.burnin(generations=400, tuningInterval=50)
+pow_p.run(generations=2000)  
+ss = steppingStoneSampler(file=output_file + ".out", 
+                          powerColumnName="power", likelihoodColumnName="likelihood")
+print(ss.marginal())
 
     # Summarize trees
     treetrace = readTreeTrace(output_file + ".trees", treetype="non-clock", burnin=0.25) 
