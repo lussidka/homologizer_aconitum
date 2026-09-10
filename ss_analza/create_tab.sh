@@ -1,11 +1,11 @@
 #!/bin/bash
 
-LOG_DIR="scripts/txt_files_ruzne-optimalizace"
-RESULTS_CSV="scripts/txt_files_ruzne-optimalizace/results_ss.csv"
+LOG_DIR="scripts/txt_files"
+RESULTS_CSV="scripts/txt_files/results_ss.csv"
 
-mkdir -p scripts/data/ss_scripts/txt_files_ruzne-optimalizace
+mkdir -p scripts/txt_files
 
-echo "sample;ploidy;run1;run2;run3;run4;run5" > "$RESULTS_CSV"
+echo "sample;ploidy;run1;run2;run3;run4;run5;run6;run7;run8;run9;run10" > "$RESULTS_CSV"
 
 for TXT1 in "$LOG_DIR"/*_1.txt; do
 
@@ -25,8 +25,13 @@ for TXT1 in "$LOG_DIR"/*_1.txt; do
     ML3=""
     ML4=""
     ML5=""
+    ML6=""
+    ML7=""
+    ML8=""
+    ML9=""
+    ML10=""
 
-    for run in 1 2 3 4 5; do
+    for run in 1 2 3 4 5 6 7 8 9 10; do
 
         TXT_FILE="${LOG_DIR}/${BASE_NAME}_${run}.txt"
 
@@ -49,11 +54,16 @@ for TXT1 in "$LOG_DIR"/*_1.txt; do
             3) ML3=$VAL ;;
             4) ML4=$VAL ;;
             5) ML5=$VAL ;;
+            6) ML6=$VAL ;;
+            7) ML7=$VAL ;;
+            8) ML8=$VAL ;;
+            9) ML9=$VAL ;;
+            10) ML10=$VAL ;;
         esac
 
     done
 
-    echo "${SAMPLE_NAME};${TESTED_PLOIDY};${ML1};${ML2};${ML3};${ML4};${ML5}" >> "$RESULTS_CSV"
+    echo "${SAMPLE_NAME};${TESTED_PLOIDY};${ML1};${ML2};${ML3};${ML4};${ML5};${ML6};${ML7};${ML8};${ML9};${ML10}" >> "$RESULTS_CSV"
 
 done
 

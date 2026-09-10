@@ -1,7 +1,7 @@
 #!/bin/bash
 
-INPUT_CSV="scripts/txt_files_ruzne-optimalizace/results_ss.csv"
-OUTPUT_CSV="scripts/txt_files_ruzne-optimalizace/results_ss_values.csv"
+INPUT_CSV="scripts/txt_files/results_ss.csv"
+OUTPUT_CSV="scripts/txt_files/results_ss_values.csv"
 
 
 export LC_ALL=C
@@ -116,16 +116,37 @@ NR > 1 {
     run1 = $3
     run2 = $4
     run3 = $5
+    run4 = $6
+    run5 = $7
+    run6 = $8
+    run7 = $9
+    run8 = $10
+    run9 = $11
+    run10 = $12
 
     f1 = (run1 ~ /Error/ || run1 == -999999.99 || run1 == "")
     f2 = (run2 ~ /Error/ || run2 == -999999.99 || run2 == "")
     f3 = (run3 ~ /Error/ || run3 == -999999.99 || run3 == "")
+    f4 = (run4 ~ /Error/ || run4 == -999999.99 || run4 == "")
+    f5 = (run5 ~ /Error/ || run5 == -999999.99 || run5 == "")
+    f6 = (run6 ~ /Error/ || run6 == -999999.99 || run6 == "")
+    f7 = (run7 ~ /Error/ || run7 == -999999.99 || run7 == "")
+    f8 = (run8 ~ /Error/ || run8 == -999999.99 || run8 == "")
+    f9 = (run9 ~ /Error/ || run9 == -999999.99 || run9 == "")
+    f10 = (run10 ~ /Error/ || run10 == -999999.99 || run10 == "")
 
-    if (f1 || f2 || f3) {
+    if (f1 || f2 || f3 || f4 || f5 || f6 || f7 || f8 || f9 || f10) {
         msg = "  -> Sample: " sample " (Ploidy: " ploidy ") | Failed replicates:"
         if (f1) msg = msg " Run1"
         if (f2) msg = msg " Run2"
         if (f3) msg = msg " Run3"
+        if (f4) msg = msg " Run4"
+        if (f5) msg = msg " Run5"
+        if (f6) msg = msg " Run6"
+        if (f7) msg = msg " Run7"
+        if (f8) msg = msg " Run8"
+        if (f9) msg = msg " Run9"
+        if (f10) msg = msg " Run10"
         print msg
     }
 }' "$OUTPUT_CSV")
