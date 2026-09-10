@@ -1,0 +1,2 @@
+   Missing Variable:	Variable data does not exist
+   Error:	Problem processing line 14 in file "ss_n_BRS2_099_4tips.Rev"
